@@ -1,1 +1,562 @@
-tradelink
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>코드 링크 생성기</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .header-section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .content-section {
+            display: flex;
+            gap: 20px;
+        }
+        .template-section, .result-section {
+            flex: 1;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            margin-top: 0;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .btn-add {
+            background-color: #2196F3;
+        }
+        .btn-add:hover {
+            background-color: #0b7dda;
+        }
+        .btn-remove {
+            background-color: #f44336;
+        }
+        .btn-remove:hover {
+            background-color: #d32f2f;
+        }
+        .link-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .link-item {
+            display: flex;
+            margin-bottom: 15px;
+            padding: 10px;
+            background-color: #f9f9f9;
+            border-radius: 4px;
+            border-left: 3px solid #4CAF50;
+        }
+        .template-link, .generated-link {
+            flex: 1;
+            padding: 0 10px;
+        }
+        .template-link input {
+            margin-bottom: 0;
+        }
+        .generated-link a {
+            color: #0066cc;
+            word-break: break-all;
+            text-decoration: none;
+            display: block;
+            padding: 10px;
+            background-color: #e9f5ff;
+            border-radius: 4px;
+        }
+        .generated-link a:hover {
+            background-color: #d4ebff;
+            text-decoration: underline;
+        }
+        .list-controls {
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 15px;
+        }
+        .list-header {
+            display: flex;
+            margin-bottom: 10px;
+            font-weight: bold;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+        }
+        .list-header div {
+            flex: 1;
+            padding: 0 10px;
+        }
+        .placeholder-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        .placeholder-name, .placeholder-value {
+            flex: 1;
+        }
+        .btn-remove-placeholder {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .btn-remove-placeholder:hover {
+            background-color: #d32f2f;
+        }
+        #custom-placeholders {
+            margin-bottom: 15px;
+        }
+        #add-placeholder-btn {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>코드 링크 생성기</h1>
+    
+    <div class="container">
+        <div class="header-section">
+            <label for="base-url">BASE URL 입력 (선택사항):</label>
+            <input type="text" id="base-url" placeholder="예: https://example.com" />
+            
+            <!-- 추가 입력 필드 -->
+            <div class="additional-fields">
+                <div class="field-row">
+                    <div class="field-item">
+                        <label for="ticker">Ticker:</label>
+                        <input type="text" id="ticker" placeholder="티커 값 입력" />
+                    </div>
+                    <div class="field-item">
+                        <label for="seq">Seq:</label>
+                        <input type="text" id="seq" placeholder="시퀀스 값 입력" />
+                    </div>
+                </div>
+                <div class="field-row">
+                    <div class="field-item">
+                        <label for="topPrice">Top Price:</label>
+                        <input type="text" id="topPrice" placeholder="상단가 입력" />
+                    </div>
+                    <div class="field-item">
+                        <label for="botmPrice">Bottom Price:</label>
+                        <input type="text" id="botmPrice" placeholder="하단가 입력" />
+                    </div>
+                    <div class="field-item">
+                        <label for="tradePrice">Trade Price:</label>
+                        <input type="text" id="tradePrice" placeholder="거래가 입력" />
+                    </div>
+                </div>
+            </div>
+            
+            <div class="list-controls">
+                <button id="add-template-btn" class="btn-add">+ 템플릿 추가</button>
+                <button id="remove-template-btn" class="btn-remove">선택 템플릿 삭제</button>
+                <button id="generate-btn">링크 생성하기</button>
+            </div>
+        </div>
+        
+        <div class="content-section">
+            <div class="template-section">
+                <div class="list-header">
+                    <div>템플릿 링크 (&lt;ticker&gt;, &lt;seq&gt;, &lt;topPrice&gt;, &lt;botmPrice&gt;, &lt;tradePrice&gt; 등이 대체됩니다)</div>
+                </div>
+                <ul id="template-list" class="link-list">
+                    <li class="link-item">
+                        <div class="template-link">
+                            <input type="text" class="template-input" placeholder="예: /path?ticker=<ticker>&seq=<seq>" />
+                        </div>
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="result-section">
+                <div class="list-header">
+                    <div>생성된 링크 (클릭하면 새 창에서 열립니다)</div>
+                </div>
+                <ul id="result-list" class="link-list">
+                    <li class="link-item">
+                        <div class="generated-link">
+                            <span>필요한 값을 입력하고 링크를 생성하세요.</span>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // DOM이 완전히 로드된 후 실행되도록 함수 정의
+    function initApp() {
+        const baseUrlInput = document.getElementById('base-url');
+        const tickerInput = document.getElementById('ticker');
+        const seqInput = document.getElementById('seq');
+        const topPriceInput = document.getElementById('topPrice');
+        const botmPriceInput = document.getElementById('botmPrice');
+        const tradePriceInput = document.getElementById('tradePrice');
+        const templateList = document.getElementById('template-list');
+        const resultList = document.getElementById('result-list');
+        const addTemplateBtn = document.getElementById('add-template-btn');
+        const removeTemplateBtn = document.getElementById('remove-template-btn');
+        const generateBtn = document.getElementById('generate-btn');
+        
+        // 추가 필드 입력 이벤트 리스너
+        tickerInput.addEventListener('input', function() {
+            saveTicker();
+            updateAllLinks();
+        });
+        
+        seqInput.addEventListener('input', function() {
+            saveSeq();
+            updateAllLinks();
+        });
+        
+        topPriceInput.addEventListener('input', function() {
+            saveTopPrice();
+            updateAllLinks();
+        });
+        
+        botmPriceInput.addEventListener('input', function() {
+            saveBotmPrice();
+            updateAllLinks();
+        });
+        
+        tradePriceInput.addEventListener('input', function() {
+            saveTradePrice();
+            updateAllLinks();
+        });
+        
+        // BASE_URL 입력 필드 값 변경 감지 및 저장
+        baseUrlInput.addEventListener('input', function() {
+            saveBaseUrl();
+            updateAllLinks(); // 모든 링크 업데이트
+        });
+        
+        // 템플릿 추가 버튼
+        addTemplateBtn.addEventListener('click', function() {
+            addTemplateItem();
+        });
+        
+        // 템플릿 항목 추가 함수
+        function addTemplateItem(templateValue = '') {
+            const newItem = document.createElement('li');
+            newItem.className = 'link-item';
+            newItem.innerHTML = `
+                <div class="template-link">
+                    <input type="text" class="template-input" value="${templateValue}" placeholder="예: /path?ticker=<ticker>" />
+                </div>
+            `;
+            templateList.appendChild(newItem);
+            
+            // 결과 리스트에도 빈 항목 추가
+            const newResultItem = document.createElement('li');
+            newResultItem.className = 'link-item';
+            newResultItem.innerHTML = `
+                <div class="generated-link">
+                    <span>필요한 값을 입력하고 링크를 생성하세요.</span>
+                </div>
+            `;
+            resultList.appendChild(newResultItem);
+            
+            // 템플릿 입력 필드에 이벤트 리스너 추가
+            const templateInput = newItem.querySelector('.template-input');
+            templateInput.addEventListener('input', function() {
+                saveTemplates();
+                // 해당 템플릿의 결과 링크만 업데이트
+                const index = Array.from(templateList.children).indexOf(newItem);
+                updateLinkAtIndex(index);
+            });
+            
+            // 템플릿 저장
+            saveTemplates();
+            
+            // 새로 추가된 템플릿의 링크 업데이트
+            const index = templateList.children.length - 1;
+            updateLinkAtIndex(index);
+        }
+        
+        // 템플릿 삭제 버튼
+        removeTemplateBtn.addEventListener('click', function() {
+            const templateItems = templateList.querySelectorAll('.link-item');
+            const resultItems = resultList.querySelectorAll('.link-item');
+            
+            if (templateItems.length > 1) {
+                templateList.removeChild(templateItems[templateItems.length - 1]);
+                resultList.removeChild(resultItems[resultItems.length - 1]);
+                
+                // 템플릿 저장
+                saveTemplates();
+            } else {
+                alert('최소 하나의 템플릿은 유지해야 합니다.');
+            }
+        });
+        
+        // 링크 생성 버튼
+        generateBtn.addEventListener('click', function() {
+            updateAllLinks();
+        });
+        
+        // 특정 인덱스의 링크만 업데이트하는 함수
+        function updateLinkAtIndex(index) {
+            const baseUrl = baseUrlInput.value.trim();
+            const ticker = tickerInput.value.trim();
+            const seq = seqInput.value.trim();
+            const topPrice = topPriceInput.value.trim();
+            const botmPrice = botmPriceInput.value.trim();
+            const tradePrice = tradePriceInput.value.trim();
+            
+            const templateItems = templateList.querySelectorAll('.link-item');
+            const resultItems = resultList.querySelectorAll('.link-item');
+            
+            if (index >= templateItems.length || index >= resultItems.length) {
+                return;
+            }
+            
+            const templateInput = templateItems[index].querySelector('.template-input');
+            const resultItem = resultItems[index];
+            
+            let templateLink = templateInput.value.trim();
+            
+            if (!templateLink) {
+                resultItem.innerHTML = `
+                    <div class="generated-link">
+                        <span>템플릿 링크를 입력해주세요.</span>
+                    </div>
+                `;
+                return;
+            }
+            
+            // 링크 생성 로직
+            let generatedLink = templateLink;
+            
+            // 플레이스홀더 대체
+            if (generatedLink.includes('<ticker>')) {
+                generatedLink = generatedLink.replace(/<ticker>/g, ticker || '❌');
+            }
+            if (generatedLink.includes('<seq>')) {
+                generatedLink = generatedLink.replace(/<seq>/g, seq || '❌');
+            }
+            if (generatedLink.includes('<topPrice>')) {
+                generatedLink = generatedLink.replace(/<topPrice>/g, topPrice || '❌');
+            }
+            if (generatedLink.includes('<botmPrice>')) {
+                generatedLink = generatedLink.replace(/<botmPrice>/g, botmPrice || '❌');
+            }
+            if (generatedLink.includes('<tradePrice>')) {
+                generatedLink = generatedLink.replace(/<tradePrice>/g, tradePrice || '❌');
+            }
+            
+            // BASE_URL 추가 (맨 앞에 추가)
+            if (baseUrl) {
+                // URL이 이미 http:// 또는 https://로 시작하는지 확인
+                if (!generatedLink.match(/^https?:\/\//)) {
+                    // 슬래시 중복 방지
+                    if (baseUrl.endsWith('/') && generatedLink.startsWith('/')) {
+                        generatedLink = baseUrl + generatedLink.substring(1);
+                    } else if (!baseUrl.endsWith('/') && !generatedLink.startsWith('/')) {
+                        generatedLink = baseUrl + '/' + generatedLink;
+                    } else {
+                        generatedLink = baseUrl + generatedLink;
+                    }
+                }
+            }
+            
+            resultItem.innerHTML = `
+                <div class="generated-link">
+                    <a href="${generatedLink}" target="_blank">${generatedLink}</a>
+                </div>
+            `;
+        }
+        
+        // 모든 링크 업데이트 함수
+        function updateAllLinks() {
+            const templateItems = templateList.querySelectorAll('.link-item');
+            
+            for (let i = 0; i < templateItems.length; i++) {
+                updateLinkAtIndex(i);
+            }
+        }
+        
+        // 템플릿을 localStorage에 저장하는 함수
+        function saveTemplates() {
+            const templateInputs = document.querySelectorAll('.template-input');
+            const templates = Array.from(templateInputs).map(input => input.value);
+            localStorage.setItem('fkrtmps', JSON.stringify(templates));
+        }
+        
+        // BASE_URL을 localStorage에 저장하는 함수
+        function saveBaseUrl() {
+            localStorage.setItem('fkrbaseurl', baseUrlInput.value);
+        }
+        
+        // Ticker를 localStorage에 저장하는 함수
+        function saveTicker() {
+            localStorage.setItem('fkrticker', tickerInput.value);
+        }
+        
+        // Seq를 localStorage에 저장하는 함수
+        function saveSeq() {
+            localStorage.setItem('fkrseq', seqInput.value);
+        }
+        
+        // TopPrice를 localStorage에 저장하는 함수
+        function saveTopPrice() {
+            localStorage.setItem('fkrtopprice', topPriceInput.value);
+        }
+        
+        // BotmPrice를 localStorage에 저장하는 함수
+        function saveBotmPrice() {
+            localStorage.setItem('fkrbotmprice', botmPriceInput.value);
+        }
+        
+        // TradePrice를 localStorage에 저장하는 함수
+        function saveTradePrice() {
+            localStorage.setItem('fkrtradeprice', tradePriceInput.value);
+        }
+        
+        // localStorage에서 템플릿 불러오는 함수
+        function loadTemplates() {
+            const savedTemplates = localStorage.getItem('fkrtmps');
+            if (savedTemplates) {
+                try {
+                    const templates = JSON.parse(savedTemplates);
+                    
+                    // 기존 템플릿 항목 제거
+                    templateList.innerHTML = '';
+                    resultList.innerHTML = '';
+                    
+                    // 저장된 템플릿이 없으면 기본 템플릿 하나 추가
+                    if (templates.length === 0) {
+                        addTemplateItem();
+                        return;
+                    }
+                    
+                    // 저장된 템플릿 로드
+                    templates.forEach(template => {
+                        addTemplateItem(template || '');
+                    });
+                } catch (e) {
+                    console.error('템플릿 로드 중 오류 발생:', e);
+                    // 오류 발생 시 기본 템플릿 하나 추가
+                    templateList.innerHTML = '';
+                    resultList.innerHTML = '';
+                    addTemplateItem();
+                }
+            } else {
+                // 저장된 템플릿이 없으면 기본 템플릿 하나 추가
+                addTemplateItem();
+            }
+        }
+        
+        // localStorage에서 BASE_URL 불러오는 함수
+        function loadBaseUrl() {
+            const savedBaseUrl = localStorage.getItem('fkrbaseurl');
+            if (savedBaseUrl) {
+                baseUrlInput.value = savedBaseUrl;
+            }
+        }
+        
+        // localStorage에서 Ticker 불러오는 함수
+        function loadTicker() {
+            const savedTicker = localStorage.getItem('fkrticker');
+            if (savedTicker) {
+                tickerInput.value = savedTicker;
+            }
+        }
+        
+        // localStorage에서 Seq 불러오는 함수
+        function loadSeq() {
+            const savedSeq = localStorage.getItem('fkrseq');
+            if (savedSeq) {
+                seqInput.value = savedSeq;
+            }
+        }
+        
+        // localStorage에서 TopPrice 불러오는 함수
+        function loadTopPrice() {
+            const savedTopPrice = localStorage.getItem('fkrtopprice');
+            if (savedTopPrice) {
+                topPriceInput.value = savedTopPrice;
+            }
+        }
+        
+        // localStorage에서 BotmPrice 불러오는 함수
+        function loadBotmPrice() {
+            const savedBotmPrice = localStorage.getItem('fkrbotmprice');
+            if (savedBotmPrice) {
+                botmPriceInput.value = savedBotmPrice;
+            }
+        }
+        
+        // localStorage에서 TradePrice 불러오는 함수
+        function loadTradePrice() {
+            const savedTradePrice = localStorage.getItem('fkrtradeprice');
+            if (savedTradePrice) {
+                tradePriceInput.value = savedTradePrice;
+            }
+        }
+        
+        // 페이지 로드 시 저장된 데이터 불러오기
+        loadBaseUrl();
+        loadTicker();
+        loadSeq();
+        loadTopPrice();
+        loadBotmPrice();
+        loadTradePrice();
+        loadTemplates();
+        
+        // 초기 상태에서 모든 링크 업데이트
+        updateAllLinks();
+    }
+
+    // DOM이 완전히 로드된 후 앱 초기화 함수 실행
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', initApp);
+    } else {
+        initApp();
+    }
+</script>
+</body>
+</html>
