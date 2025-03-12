@@ -153,6 +153,14 @@
         #add-placeholder-btn {
             margin-bottom: 15px;
         }
+        .field-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .field-item {
+            flex: 1;
+        }
     </style>
 </head>
 <body>
@@ -173,6 +181,10 @@
                     <div class="field-item">
                         <label for="seq">Seq:</label>
                         <input type="text" id="seq" placeholder="시퀀스 값 입력" />
+                    </div>
+                    <div class="field-item">
+                        <label for="condTypeCd">condTypeCd:</label>
+                        <input type="text" id="condTypeCd" placeholder="컨텐츠 타입 코드 입력" />
                     </div>
                 </div>
                 <div class="field-row">
@@ -201,12 +213,12 @@
         <div class="content-section">
             <div class="template-section">
                 <div class="list-header">
-                    <div>템플릿 링크 (&lt;ticker&gt;, &lt;seq&gt;, &lt;topPrice&gt;, &lt;botmPrice&gt;, &lt;tradePrice&gt; 등이 대체됩니다)</div>
+                    <div>템플릿 링크 (&lt;ticker&gt;, &lt;seq&gt;, &lt;condTypeCd&gt;, &lt;topPrice&gt;, &lt;botmPrice&gt;, &lt;tradePrice&gt; 등이 대체됩니다)</div>
                 </div>
                 <ul id="template-list" class="link-list">
                     <li class="link-item">
                         <div class="template-link">
-                            <input type="text" class="template-input" placeholder="예: /path?ticker=<ticker>&seq=<seq>" />
+                            <input type="text" class="template-input" placeholder="예: /path?ticker=<ticker>&condTypeCd=<condTypeCd>" />
                         </div>
                     </li>
                 </ul>
@@ -233,6 +245,7 @@
         const baseUrlInput = document.getElementById('base-url');
         const tickerInput = document.getElementById('ticker');
         const seqInput = document.getElementById('seq');
+        const condTypeCdInput = document.getElementById('condTypeCd'); // 새로 추가된 condTypeCd 입력 필드
         const topPriceInput = document.getElementById('topPrice');
         const botmPriceInput = document.getElementById('botmPrice');
         const tradePriceInput = document.getElementById('tradePrice');
@@ -250,6 +263,12 @@
         
         seqInput.addEventListener('input', function() {
             saveSeq();
+            updateAllLinks();
+        });
+
+        // condTypeCd 입력 이벤트 리스너 추가
+        condTypeCdInput.addEventListener('input', function() {
+            savecondTypeCd();
             updateAllLinks();
         });
         
@@ -285,7 +304,7 @@
             newItem.className = 'link-item';
             newItem.innerHTML = `
                 <div class="template-link">
-                    <input type="text" class="template-input" value="${templateValue}" placeholder="예: /path?ticker=<ticker>" />
+                    <input type="text" class="template-input" value="${templateValue}" placeholder="예: /path?ticker=<ticker>&condTypeCd=<condTypeCd>" />
                 </div>
             `;
             templateList.appendChild(newItem);
@@ -343,6 +362,7 @@
             const baseUrl = baseUrlInput.value.trim();
             const ticker = tickerInput.value.trim();
             const seq = seqInput.value.trim();
+            const condTypeCd = condTypeCdInput.value.trim(); // condTypeCd 값 가져오기
             const topPrice = topPriceInput.value.trim();
             const botmPrice = botmPriceInput.value.trim();
             const tradePrice = tradePriceInput.value.trim();
@@ -377,6 +397,10 @@
             }
             if (generatedLink.includes('<seq>')) {
                 generatedLink = generatedLink.replace(/<seq>/g, seq || '❌');
+            }
+            // condTypeCd 플레이스홀더 대체 추가
+            if (generatedLink.includes('<condTypeCd>')) {
+                generatedLink = generatedLink.replace(/<condTypeCd>/g, condTypeCd || '❌');
             }
             if (generatedLink.includes('<topPrice>')) {
                 generatedLink = generatedLink.replace(/<topPrice>/g, topPrice || '❌');
@@ -439,6 +463,11 @@
         // Seq를 localStorage에 저장하는 함수
         function saveSeq() {
             localStorage.setItem('fkrseq', seqInput.value);
+        }
+
+        // condTypeCd를 localStorage에 저장하는 함수 추가
+        function savecondTypeCd() {
+            localStorage.setItem('fkrcondTypeCd', condTypeCdInput.value);
         }
         
         // TopPrice를 localStorage에 저장하는 함수
@@ -513,6 +542,14 @@
                 seqInput.value = savedSeq;
             }
         }
+
+        // localStorage에서 condTypeCd 불러오는 함수 추가
+        function loadcondTypeCd() {
+            const savedcondTypeCd = localStorage.getItem('fkrcondTypeCd');
+            if (savedcondTypeCd) {
+                condTypeCdInput.value = savedcondTypeCd;
+            }
+        }
         
         // localStorage에서 TopPrice 불러오는 함수
         function loadTopPrice() {
@@ -542,6 +579,7 @@
         loadBaseUrl();
         loadTicker();
         loadSeq();
+        loadcondTypeCd(); // condTypeCd 로드
         loadTopPrice();
         loadBotmPrice();
         loadTradePrice();
