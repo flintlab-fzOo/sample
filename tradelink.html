@@ -313,6 +313,9 @@
             padding: 12px 6px 0px 7px;
             color: silver;
         }
+        .flex {
+            display:flex;
+        }
     </style>
 </head>
 <body>
@@ -419,7 +422,7 @@
             </div>
             
             <div class="preview-section">
-                <div class="list-header show">
+                <div class="list-header show flex">
                     <div class="fold-button" title="미리보기 접기/펼치기">
                         <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
@@ -451,25 +454,25 @@
         // const generateBtn = document.getElementById('generate-btn');
         
         // 템플릿 섹션 폴딩 기능 추가
-        const templateSection = document.querySelector('.template-section');
-        const foldButton = document.querySelector('.fold-button');
+        // const templateSection = document.querySelector('.template-section');
+        // const foldButton = document.querySelector('.fold-button');
         
-        if (foldButton) {
-            foldButton.addEventListener('click', function() {
-                templateSection.classList.toggle('folded');
-                this.classList.toggle('folded');
+        // if (foldButton) {
+        //     foldButton.addEventListener('click', function() {
+        //         templateSection.classList.toggle('folded');
+        //         this.classList.toggle('folded');
                 
-                // 폴딩 상태 저장
-                localStorage.setItem('templateSectionFolded', templateSection.classList.contains('folded'));
-            });
+        //         // 폴딩 상태 저장
+        //         localStorage.setItem('templateSectionFolded', templateSection.classList.contains('folded'));
+        //     });
             
-            // 저장된 폴딩 상태 불러오기
-            const isFolded = localStorage.getItem('templateSectionFolded') === 'true';
-            if (isFolded) {
-                templateSection.classList.add('folded');
-                foldButton.classList.add('folded');
-            }
-        }
+        //     // 저장된 폴딩 상태 불러오기
+        //     const isFolded = localStorage.getItem('templateSectionFolded') === 'true';
+        //     if (isFolded) {
+        //         templateSection.classList.add('folded');
+        //         foldButton.classList.add('folded');
+        //     }
+        // }
 
         
         // 미리보기 섹션 폴딩 기능 추가
