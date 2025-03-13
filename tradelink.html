@@ -6,153 +6,222 @@
     <title>코드 링크 생성기</title>
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Segoe UI', 'Roboto', sans-serif;
             line-height: 1.6;
             margin: 0;
             padding: 20px;
-            background-color: #f5f5f5;
+            background-color: #f8f9fa;
+            color: #333;
         }
         .container {
-            max-width: 1200px;
+            /* max-width: 1400px; */
             margin: 0 auto;
-        }
-        .header-section {
-            background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-        }
-        .content-section {
             display: flex;
             gap: 20px;
         }
-        .template-section, .result-section {
-            flex: 1;
+        .header-section {
             background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(0,0,0,0.05);
         }
+        .header-section:hover {
+            box-shadow: 0 6px 16px rgba(0,0,0,0.1);
+        }
+        .content-section {
+            display: flex;
+            flex-direction: column;
+            /* gap: 20px; */
+            border-radius: 12px;
+            background-color: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            flex: 1;
+            border: 1px solid rgba(0,0,0,0.05);
+            overflow: hidden;
+        }
+        .template-section, .result-section, .preview-section {
+            background-color: white;
+            padding: 25px;
+            transition: all 0.3s ease;
+        }
+        .template-section {
+            flex: 1;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            padding:0px 25px 25px 25px;
+        }
+        .result-section {
+            flex: 1;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .preview-section {
+            flex: 2;
+            max-width:400px;
+        }
+        .preview-frame {
+            width: 100%;
+            height: 400px;
+            border: 1px solid rgba(0,0,0,0.1);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        .preview-frame:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+    
         h1, h2 {
-            color: #333;
+            color: #2c3e50;
         }
         h1 {
             text-align: center;
             margin-top: 0;
+            font-size: 32px;
+            font-weight: 600;
+            margin-bottom: 30px;
+            background: linear-gradient(135deg, #3498db, #8e44ad);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
         }
         label {
             display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: #2c3e50;
+            font-size: 14px;
         }
         input {
             width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
+            padding: 12px;
+            margin-bottom: 18px;
             border: 1px solid #ddd;
-            border-radius: 4px;
+            border-radius: 8px;
             box-sizing: border-box;
+            transition: all 0.3s ease;
+            font-size: 14px;
         }
-        button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 16px;
-            margin-right: 10px;
+        input:focus {
+            border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            outline: none;
         }
-        button:hover {
-            background-color: #45a049;
+        input:hover {
+            border-color: #bbb;
         }
-        .btn-add {
-            background-color: #2196F3;
-        }
-        .btn-add:hover {
-            background-color: #0b7dda;
-        }
-        .btn-remove {
-            background-color: #f44336;
-        }
-        .btn-remove:hover {
-            background-color: #d32f2f;
-        }
+        
         .link-list {
             list-style-type: none;
             padding: 0;
         }
         .link-item {
+            font-size: 12px;
             display: flex;
             margin-bottom: 15px;
-            padding: 10px;
+            padding: 12px;
             background-color: #f9f9f9;
-            border-radius: 4px;
-            border-left: 3px solid #4CAF50;
+            border-radius: 8px;
+            border-left: 3px solid #3498db;
+            min-height: 33px;
+            height: 37px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+        }
+        .link-item:hover {
+            box-shadow: 0 4px 8px rgba(0,0,0,0.06);
+            transform: translateY(-2px);
         }
         .template-link, .generated-link {
             flex: 1;
             padding: 0 10px;
         }
         .template-link input {
+            font-size: 12px;
             margin-bottom: 0;
+            border-radius: 6px;
         }
         .generated-link a {
-            color: #0066cc;
+            color: #2980b9;
             word-break: break-all;
             text-decoration: none;
             display: block;
-            padding: 10px;
+            padding: 8px;
             background-color: #e9f5ff;
-            border-radius: 4px;
+            border-radius: 6px;
+            font-size: 14px;
+            transition: all 0.3s ease;
         }
         .generated-link a:hover {
             background-color: #d4ebff;
             text-decoration: underline;
+            transform: translateY(-1px);
         }
         .list-controls {
             display: flex;
             justify-content: flex-start;
-            margin-bottom: 15px;
+            /* margin-bottom: 15px; */
+            padding: 10px 12px;
+            /* padding-top: 25px; */
         }
         .list-header {
-            display: flex;
-            margin-bottom: 10px;
-            font-weight: bold;
-            border-bottom: 2px solid #ddd;
-            padding-bottom: 10px;
+            font-size: 14px;
+            /* display: flex; */
+            margin-bottom: 15px;
+            font-weight: 700;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 12px;
+            justify-content: flex-start;
+            align-items: center;
+            color: #2c3e50;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+            background: linear-gradient(to right, #f8f9fa, white);
+            padding: 12px 15px;
+            border-radius: 8px 8px 0 0;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.03);
+            
+            display:none;
         }
         .list-header div {
-            flex: 1;
             padding: 0 10px;
         }
-        .placeholder-item {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-            align-items: center;
+        .list-header div:first-child {
+            flex: 0 0 auto;
         }
-        .placeholder-name, .placeholder-value {
+        .list-header div:nth-child(2) {
             flex: 1;
         }
-        .btn-remove-placeholder {
-            background-color: #f44336;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 4px;
+        .fold-button {
             cursor: pointer;
+            padding: 8px;
+            z-index: 10;
+            transition: all 0.3s ease;
+            color: #3498db;
+            background-color: rgba(52, 152, 219, 0.1);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 24px;
+            height: 24px;
+
+            display:none;
         }
-        .btn-remove-placeholder:hover {
-            background-color: #d32f2f;
+        .fold-button.folded {
+            transform: rotate(-90deg);
+            background-color: rgba(52, 152, 219, 0.2);
         }
-        #custom-placeholders {
-            margin-bottom: 15px;
+        .template-section.folded .link-list {
+            display: none;
         }
-        #add-placeholder-btn {
-            margin-bottom: 15px;
+        .template-section.folded .list-header {
+            margin-bottom: 0;
+            border-bottom: none;
+            background: linear-gradient(to right, #e9f5ff, white);
         }
+        
         .field-row {
             display: flex;
             gap: 15px;
@@ -160,6 +229,77 @@
         }
         .field-item {
             flex: 1;
+        }
+        
+        .icon-button {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin-right: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 3px;
+            border-radius: 10px;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+            isolation: isolate;
+        }
+    
+        .icon-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, #2980b9, #1c638e);
+        }
+    
+        .icon-button:active {
+            transform: translateY(1px);
+            box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+    
+        .icon-button svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+    
+        .icon-button[title]:hover::after {
+            content: attr(title);
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            background-color: #2c3e50;
+            color: #ffffff;
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-size: 12px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+            opacity: 1;
+            pointer-events: none;
+            z-index: 10;
+        }
+    
+        #remove-template-btn {
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+        }
+        
+        #remove-template-btn:hover {
+            background: linear-gradient(135deg, #c0392b, #a33025);
+        }
+        
+        /* Add a subtle animation for the fold button */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .fold-button:hover svg {
+            animation: pulse 1s infinite;
         }
     </style>
 </head>
@@ -173,46 +313,71 @@
             
             <!-- 추가 입력 필드 -->
             <div class="additional-fields">
-                <div class="field-row">
-                    <div class="field-item">
-                        <label for="ticker">Ticker:</label>
-                        <input type="text" id="ticker" placeholder="티커 값 입력" />
-                    </div>
-                    <div class="field-item">
-                        <label for="seq">Seq:</label>
-                        <input type="text" id="seq" placeholder="시퀀스 값 입력" />
-                    </div>
-                    <div class="field-item">
-                        <label for="condTypeCd">condTypeCd:</label>
-                        <input type="text" id="condTypeCd" placeholder="컨텐츠 타입 코드 입력" />
-                    </div>
+                <div class="field-item">
+                    <label for="ticker">Ticker:</label>
+                    <input type="text" id="ticker" placeholder="티커 값 입력" />
+                </div>
+                <div class="field-item">
+                    <label for="seq">Seq:</label>
+                    <input type="text" id="seq" placeholder="시퀀스 값 입력" />
+                </div>
+                <div class="field-item">
+                    <label for="condTypeCd">condTypeCd:</label>
+                    <input type="text" id="condTypeCd" placeholder="컨텐츠 타입 코드 입력" />
                 </div>
                 <div class="field-row">
-                    <div class="field-item">
-                        <label for="topPrice">Top Price:</label>
-                        <input type="text" id="topPrice" placeholder="상단가 입력" />
-                    </div>
-                    <div class="field-item">
-                        <label for="botmPrice">Bottom Price:</label>
-                        <input type="text" id="botmPrice" placeholder="하단가 입력" />
-                    </div>
-                    <div class="field-item">
-                        <label for="tradePrice">Trade Price:</label>
-                        <input type="text" id="tradePrice" placeholder="거래가 입력" />
-                    </div>
+                </div>
+                <div class="field-item">
+                    <label for="topPrice">Top Price:</label>
+                    <input type="text" id="topPrice" placeholder="상단가 입력" />
+                </div>
+                <div class="field-item">
+                    <label for="botmPrice">Bottom Price:</label>
+                    <input type="text" id="botmPrice" placeholder="하단가 입력" />
+                </div>
+                <div class="field-item">
+                    <label for="tradePrice">Trade Price:</label>
+                    <input type="text" id="tradePrice" placeholder="거래가 입력" />
+                </div>
+                <div class="field-row">
                 </div>
             </div>
             
-            <div class="list-controls">
-                <button id="add-template-btn" class="btn-add">+ 템플릿 추가</button>
-                <button id="remove-template-btn" class="btn-remove">선택 템플릿 삭제</button>
-                <button id="generate-btn">링크 생성하기</button>
-            </div>
+            
         </div>
-        
+
+
+
         <div class="content-section">
+            <div class="list-controls">
+                <!-- 템플릿 추가 버튼 -->
+                <button id="add-template-btn" class="icon-button" title="템플릿 추가">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 96 960 960" fill="#4CAF50">
+                        <path d="M480 800q-17 0-28.5-11.5T440 760V576H256q-17 0-28.5-11.5T216 536q0-17 11.5-28.5T256 496h184V312q0-17 11.5-28.5T480 272q17 0 28.5 11.5T520 312v184h184q17 0 28.5 11.5T744 536q0 17-11.5 28.5T704 576H520v184q0 17-11.5 28.5T480 800Z"/>
+                    </svg>
+                </button>
+            
+                <!-- 템플릿 삭제 버튼 -->
+                <button id="remove-template-btn" class="icon-button" title="템플릿 삭제" style="background: linear-gradient(135deg, #FF5252, #FF1744);">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 96 960 960" fill="#FFFFFF">
+                        <path d="M312 896q-35 0-59.5-24.5T228 812V316H200q-13 0-21.5-8.5T170 286q0-13 8.5-21.5T200 256h160v-40q0-17 11.5-28.5T400 176h160q17 0 28.5 11.5T600 216v40h160q13 0 21.5 8.5T790 286q0 13-8.5 21.5T760 316h-28v496q0 35-24.5 59.5T648 896H312Zm336-580H312v496h336V316Zm-209 413q13 0 21.5-8.5T469 700V500q0-13-8.5-21.5T439 470q-13 0-21.5 8.5T409 500v200q0 13 8.5 21.5T439 729Zm100 0q13 0 21.5-8.5T569 700V500q0-13-8.5-21.5T539 470q-13 0-21.5 8.5T509 500v200q0 13 8.5 21.5T539 729Z"/>
+                    </svg>
+                </button>
+            
+                <!-- 링크 생성 버튼
+                <button id="generate-btn" class="icon-button" title="링크 생성" style="background: linear-gradient(135deg, #2196F3, #0b7dda);">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 96 960 960" fill="#FFFFFF">
+                        <path d="M394 756H300q-57 0-96.5-39.5T164 620q0-57 39.5-96.5T300 484h94q17 0 28.5 11.5T434 524q0 17-11.5 28.5T394 564H300q-30 0-51 21t-21 51q0 30 21 51t51 21h94q17 0 28.5 11.5T434 696q0 17-11.5 28.5T394 736ZM408 596v-40q0-17-11.5-28.5T368 516H256q-30 0-51-21t-21-51q0-30 21-51t51-21h112q17 0 28.5-11.5T408 356q0-17-11.5-28.5T368 316H256q-57 0-96.5 39.5T120 456q0 57 39.5 96.5T256 556h112q17 0 28.5 11.5T408 596Z"/>
+                    </svg>
+                </button> -->
+            </div>
             <div class="template-section">
                 <div class="list-header">
+                    <div class="fold-button" title="접기/펼치기">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+                        </svg>
+                    </div>
                     <div>템플릿 링크 (&lt;ticker&gt;, &lt;seq&gt;, &lt;condTypeCd&gt;, &lt;topPrice&gt;, &lt;botmPrice&gt;, &lt;tradePrice&gt; 등이 대체됩니다)</div>
                 </div>
                 <ul id="template-list" class="link-list">
@@ -223,10 +388,12 @@
                     </li>
                 </ul>
             </div>
+            </div>
             
             <div class="result-section">
                 <div class="list-header">
-                    <div>생성된 링크 (클릭하면 새 창에서 열립니다)</div>
+                    <div></div>
+                    <div>생성된 링크 (클릭하면 미리보기에 표시됩니다)</div>
                 </div>
                 <ul id="result-list" class="link-list">
                     <li class="link-item">
@@ -236,6 +403,16 @@
                     </li>
                 </ul>
             </div>
+            
+            <div class="preview-section">
+                <div class="list-header">
+                    <div></div>
+                    <div>링크 미리보기</div>
+                </div>
+                <iframe id="preview-frame" class="preview-frame" src="about:blank"></iframe>
+            </div>
+            
+            <div id="result-datalist"></div>
         </div>
     </div>
 
@@ -245,7 +422,7 @@
         const baseUrlInput = document.getElementById('base-url');
         const tickerInput = document.getElementById('ticker');
         const seqInput = document.getElementById('seq');
-        const condTypeCdInput = document.getElementById('condTypeCd'); // 새로 추가된 condTypeCd 입력 필드
+        const condTypeCdInput = document.getElementById('condTypeCd');
         const topPriceInput = document.getElementById('topPrice');
         const botmPriceInput = document.getElementById('botmPrice');
         const tradePriceInput = document.getElementById('tradePrice');
@@ -253,8 +430,60 @@
         const resultList = document.getElementById('result-list');
         const addTemplateBtn = document.getElementById('add-template-btn');
         const removeTemplateBtn = document.getElementById('remove-template-btn');
-        const generateBtn = document.getElementById('generate-btn');
+        // const generateBtn = document.getElementById('generate-btn');
         
+        // 템플릿 섹션 폴딩 기능 추가
+        const templateSection = document.querySelector('.template-section');
+        const foldButton = document.querySelector('.fold-button');
+        
+        if (foldButton) {
+            foldButton.addEventListener('click', function() {
+                templateSection.classList.toggle('folded');
+                this.classList.toggle('folded');
+                
+                // 폴딩 상태 저장
+                localStorage.setItem('templateSectionFolded', templateSection.classList.contains('folded'));
+            });
+            
+            // 저장된 폴딩 상태 불러오기
+            const isFolded = localStorage.getItem('templateSectionFolded') === 'true';
+            if (isFolded) {
+                templateSection.classList.add('folded');
+                foldButton.classList.add('folded');
+            }
+        }
+        
+        // DataList 컴포넌트 초기화
+        let resultDataList;
+        let resultData = [];
+        
+        // DataList 컬럼 정의
+        const columns = [
+            {headerText: "템플릿", key: "template", width: 200},
+            {headerText: "생성된 링크", key: "link", width: 400}
+        ];
+        
+        // DataList 옵션 설정
+        const options = {
+            width: "100%",
+            pageRowSize: 10,
+            pageInfoVisible: true,
+            pageControlsVisible: true
+        };
+        
+        // DataList 초기화 함수
+        function initDataList() {
+            resultDataList = DataList(document.getElementById("result-datalist"), columns, options);
+            
+            // 더블 클릭 이벤트 설정 - 링크 열기
+            resultDataList.setOnDoubleClick(function(rowData) {
+                if (rowData.link && rowData.link !== '템플릿 링크를 입력해주세요.' && !rowData.link.includes('❌')) {
+                    window.open(rowData.link, '_blank');
+                }
+            });
+            
+            resultDataList.setData(resultData);
+        }
         // 추가 필드 입력 이벤트 리스너
         tickerInput.addEventListener('input', function() {
             saveTicker();
@@ -353,9 +582,9 @@
         });
         
         // 링크 생성 버튼
-        generateBtn.addEventListener('click', function() {
-            updateAllLinks();
-        });
+        // generateBtn.addEventListener('click', function() {
+        //     updateAllLinks();
+        // });
         
         // 특정 인덱스의 링크만 업데이트하는 함수
         function updateLinkAtIndex(index) {
@@ -390,6 +619,7 @@
             
             // 링크 생성 로직
             let generatedLink = templateLink;
+            let generatedLinkUrl = templateLink;
             
             // 플레이스홀더 대체
             if (generatedLink.includes('<ticker>')) {
@@ -418,20 +648,45 @@
                 if (!generatedLink.match(/^https?:\/\//)) {
                     // 슬래시 중복 방지
                     if (baseUrl.endsWith('/') && generatedLink.startsWith('/')) {
-                        generatedLink = baseUrl + generatedLink.substring(1);
+                        generatedLinkUrl = baseUrl + generatedLink.substring(1);
                     } else if (!baseUrl.endsWith('/') && !generatedLink.startsWith('/')) {
-                        generatedLink = baseUrl + '/' + generatedLink;
+                        generatedLinkUrl = baseUrl + '/' + generatedLink;
                     } else {
-                        generatedLink = baseUrl + generatedLink;
+                        generatedLinkUrl = baseUrl + generatedLink;
                     }
                 }
             }
             
             resultItem.innerHTML = `
                 <div class="generated-link">
-                    <a href="${generatedLink}" target="_blank">${generatedLink}</a>
+                    <a href="${generatedLinkUrl}" target="_blank">${generatedLink}</a>
                 </div>
             `;
+            
+            
+            // 링크 클릭 이벤트 추가 - iframe에 표시
+            const linkElement = resultItem.querySelector('a');
+            if (linkElement) {
+                linkElement.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const previewFrame = document.getElementById('preview-frame');
+                    if (previewFrame && this.href && !this.href.includes('❌')) {
+                        previewFrame.src = this.href;
+                    }
+                });
+            }
+
+            // 링크 클릭 이벤트 추가 - iframe에 표시
+            // const previewLink = resultItem.querySelector('.preview-link');
+            // if (previewLink) {
+            //     previewLink.addEventListener('click', function(e) {
+            //         e.preventDefault();
+            //         const previewFrame = document.getElementById('preview-frame');
+            //         if (previewFrame && this.href && !this.href.includes('❌')) {
+            //             previewFrame.src = this.href;
+            //         }
+            //     });
+            // }
         }
         
         // 모든 링크 업데이트 함수
@@ -498,7 +753,7 @@
                     
                     // 저장된 템플릿이 없으면 기본 템플릿 하나 추가
                     if (templates.length === 0) {
-                        addTemplateItem();
+                        // addTemplateItem();
                         return;
                     }
                     
@@ -511,11 +766,11 @@
                     // 오류 발생 시 기본 템플릿 하나 추가
                     templateList.innerHTML = '';
                     resultList.innerHTML = '';
-                    addTemplateItem();
+                    // addTemplateItem();
                 }
             } else {
                 // 저장된 템플릿이 없으면 기본 템플릿 하나 추가
-                addTemplateItem();
+                // addTemplateItem();
             }
         }
         
