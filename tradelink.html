@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>코드 링크 생성기</title>
+    <title>FKR Trade 링크 생성기</title>
     <style>
         body {
             font-family: 'Segoe UI', 'Roboto', sans-serif;
@@ -58,11 +58,17 @@
         }
         .preview-section {
             flex: 2;
-            max-width:400px;
+            max-width:500px;
+            transition: all 0.3s ease;
+        }
+        .preview-section.folded {
+            max-width: 0;
+            padding: 0;
+            overflow: hidden;
         }
         .preview-frame {
             width: 100%;
-            height: 400px;
+            height: 100%;
             border: 1px solid rgba(0,0,0,0.1);
             border-radius: 8px;
             transition: all 0.3s ease;
@@ -206,8 +212,6 @@
             justify-content: center;
             width: 24px;
             height: 24px;
-
-            display:none;
         }
         .fold-button.folded {
             transform: rotate(-90deg);
@@ -301,6 +305,14 @@
         .fold-button:hover svg {
             animation: pulse 1s infinite;
         }
+        .show {
+            display:block;
+        }
+        .reflabel {
+            font-size: 11px;
+            padding: 12px 6px 0px 7px;
+            color: silver;
+        }
     </style>
 </head>
 <body>
@@ -349,43 +361,45 @@
 
 
         <div class="content-section">
-            <div class="list-controls">
-                <!-- 템플릿 추가 버튼 -->
-                <button id="add-template-btn" class="icon-button" title="템플릿 추가">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 96 960 960" fill="#4CAF50">
-                        <path d="M480 800q-17 0-28.5-11.5T440 760V576H256q-17 0-28.5-11.5T216 536q0-17 11.5-28.5T256 496h184V312q0-17 11.5-28.5T480 272q17 0 28.5 11.5T520 312v184h184q17 0 28.5 11.5T744 536q0 17-11.5 28.5T704 576H520v184q0 17-11.5 28.5T480 800Z"/>
-                    </svg>
-                </button>
             
-                <!-- 템플릿 삭제 버튼 -->
-                <button id="remove-template-btn" class="icon-button" title="템플릿 삭제" style="background: linear-gradient(135deg, #FF5252, #FF1744);">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 96 960 960" fill="#FFFFFF">
-                        <path d="M312 896q-35 0-59.5-24.5T228 812V316H200q-13 0-21.5-8.5T170 286q0-13 8.5-21.5T200 256h160v-40q0-17 11.5-28.5T400 176h160q17 0 28.5 11.5T600 216v40h160q13 0 21.5 8.5T790 286q0 13-8.5 21.5T760 316h-28v496q0 35-24.5 59.5T648 896H312Zm336-580H312v496h336V316Zm-209 413q13 0 21.5-8.5T469 700V500q0-13-8.5-21.5T439 470q-13 0-21.5 8.5T409 500v200q0 13 8.5 21.5T439 729Zm100 0q13 0 21.5-8.5T569 700V500q0-13-8.5-21.5T539 470q-13 0-21.5 8.5T509 500v200q0 13 8.5 21.5T539 729Z"/>
-                    </svg>
-                </button>
-            
-                <!-- 링크 생성 버튼
-                <button id="generate-btn" class="icon-button" title="링크 생성" style="background: linear-gradient(135deg, #2196F3, #0b7dda);">
-                    <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 96 960 960" fill="#FFFFFF">
-                        <path d="M394 756H300q-57 0-96.5-39.5T164 620q0-57 39.5-96.5T300 484h94q17 0 28.5 11.5T434 524q0 17-11.5 28.5T394 564H300q-30 0-51 21t-21 51q0 30 21 51t51 21h94q17 0 28.5 11.5T434 696q0 17-11.5 28.5T394 736ZM408 596v-40q0-17-11.5-28.5T368 516H256q-30 0-51-21t-21-51q0-30 21-51t51-21h112q17 0 28.5-11.5T408 356q0-17-11.5-28.5T368 316H256q-57 0-96.5 39.5T120 456q0 57 39.5 96.5T256 556h112q17 0 28.5 11.5T408 596Z"/>
-                    </svg>
-                </button> -->
-            </div>
             <div class="template-section">
                 <div class="list-header">
-                    <div class="fold-button" title="접기/펼치기">
+                    <!-- <div class="fold-button" title="접기/펼치기">
                         <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 0 24 24" fill="currentColor">
                             <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
                         </svg>
-                    </div>
-                    <div>템플릿 링크 (&lt;ticker&gt;, &lt;seq&gt;, &lt;condTypeCd&gt;, &lt;topPrice&gt;, &lt;botmPrice&gt;, &lt;tradePrice&gt; 등이 대체됩니다)</div>
+                    </div> -->
+                    <div>템플릿 링크</div>
                 </div>
+                <div class="list-controls">
+                    <!-- 템플릿 추가 버튼 -->
+                    <button id="add-template-btn" class="icon-button" title="템플릿 추가">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 96 960 960" fill="#4CAF50">
+                            <path d="M480 800q-17 0-28.5-11.5T440 760V576H256q-17 0-28.5-11.5T216 536q0-17 11.5-28.5T256 496h184V312q0-17 11.5-28.5T480 272q17 0 28.5 11.5T520 312v184h184q17 0 28.5 11.5T744 536q0 17-11.5 28.5T704 576H520v184q0 17-11.5 28.5T480 800Z"/>
+                        </svg>
+                    </button>
+                
+                    <!-- 템플릿 삭제 버튼 -->
+                    <button id="remove-template-btn" class="icon-button" title="템플릿 삭제" style="background: linear-gradient(135deg, #FF5252, #FF1744);">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 96 960 960" fill="#FFFFFF">
+                            <path d="M312 896q-35 0-59.5-24.5T228 812V316H200q-13 0-21.5-8.5T170 286q0-13 8.5-21.5T200 256h160v-40q0-17 11.5-28.5T400 176h160q17 0 28.5 11.5T600 216v40h160q13 0 21.5 8.5T790 286q0 13-8.5 21.5T760 316h-28v496q0 35-24.5 59.5T648 896H312Zm336-580H312v496h336V316Zm-209 413q13 0 21.5-8.5T469 700V500q0-13-8.5-21.5T439 470q-13 0-21.5 8.5T409 500v200q0 13 8.5 21.5T439 729Zm100 0q13 0 21.5-8.5T569 700V500q0-13-8.5-21.5T539 470q-13 0-21.5 8.5T509 500v200q0 13 8.5 21.5T539 729Z"/>
+                        </svg>
+                    </button>
+                
+                    <!-- 링크 생성 버튼
+                    <button id="generate-btn" class="icon-button" title="링크 생성" style="background: linear-gradient(135deg, #2196F3, #0b7dda);">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 96 960 960" fill="#FFFFFF">
+                            <path d="M394 756H300q-57 0-96.5-39.5T164 620q0-57 39.5-96.5T300 484h94q17 0 28.5 11.5T434 524q0 17-11.5 28.5T394 564H300q-30 0-51 21t-21 51q0 30 21 51t51 21h94q17 0 28.5 11.5T434 696q0 17-11.5 28.5T394 736ZM408 596v-40q0-17-11.5-28.5T368 516H256q-30 0-51-21t-21-51q0-30 21-51t51-21h112q17 0 28.5-11.5T408 356q0-17-11.5-28.5T368 316H256q-57 0-96.5 39.5T120 456q0 57 39.5 96.5T256 556h112q17 0 28.5 11.5T408 596Z"/>
+                        </svg>
+                    </button> -->
+                </div>
+                <div class="reflabel""">&lt;ticker&gt;, &lt;seq&gt;, &lt;condTypeCd&gt;, &lt;topPrice&gt;, &lt;botmPrice&gt;, &lt;tradePrice&gt; 등이 대체됩니다</div>
                 <ul id="template-list" class="link-list">
-                    <li class="link-item">
+                    <!-- <li class="link-item">
                         <div class="template-link">
                             <input type="text" class="template-input" placeholder="예: /path?ticker=<ticker>&condTypeCd=<condTypeCd>" />
                         </div>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
             </div>
@@ -396,17 +410,21 @@
                     <div>생성된 링크 (클릭하면 미리보기에 표시됩니다)</div>
                 </div>
                 <ul id="result-list" class="link-list">
-                    <li class="link-item">
+                    <!-- <li class="link-item">
                         <div class="generated-link">
                             <span>필요한 값을 입력하고 링크를 생성하세요.</span>
                         </div>
-                    </li>
+                    </li> -->
                 </ul>
             </div>
             
             <div class="preview-section">
-                <div class="list-header">
-                    <div></div>
+                <div class="list-header show">
+                    <div class="fold-button" title="미리보기 접기/펼치기">
+                        <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M7.41 8.59L12 13.17l4.59-4.58L18 10l-6 6-6-6 1.41-1.41z"/>
+                        </svg>
+                    </div>
                     <div>링크 미리보기</div>
                 </div>
                 <iframe id="preview-frame" class="preview-frame" src="about:blank"></iframe>
@@ -450,6 +468,28 @@
             if (isFolded) {
                 templateSection.classList.add('folded');
                 foldButton.classList.add('folded');
+            }
+        }
+
+        
+        // 미리보기 섹션 폴딩 기능 추가
+        const previewSection = document.querySelector('.preview-section');
+        const previewFoldButton = previewSection.querySelector('.fold-button');
+        
+        if (previewFoldButton) {
+            previewFoldButton.addEventListener('click', function() {
+                previewSection.classList.toggle('folded');
+                this.classList.toggle('folded');
+                
+                // 폴딩 상태 저장
+                localStorage.setItem('previewSectionFolded', previewSection.classList.contains('folded'));
+            });
+            
+            // 저장된 폴딩 상태 불러오기
+            const isPreviewFolded = localStorage.getItem('previewSectionFolded') === 'true';
+            if (isPreviewFolded) {
+                previewSection.classList.add('folded');
+                previewFoldButton.classList.add('folded');
             }
         }
         
@@ -570,14 +610,14 @@
             const templateItems = templateList.querySelectorAll('.link-item');
             const resultItems = resultList.querySelectorAll('.link-item');
             
-            if (templateItems.length > 1) {
+            if (templateItems.length > 0) {
                 templateList.removeChild(templateItems[templateItems.length - 1]);
                 resultList.removeChild(resultItems[resultItems.length - 1]);
                 
                 // 템플릿 저장
                 saveTemplates();
             } else {
-                alert('최소 하나의 템플릿은 유지해야 합니다.');
+                // alert('최소 하나의 템플릿은 유지해야 합니다.');
             }
         });
         
@@ -656,6 +696,9 @@
                     }
                 }
             }
+
+            // HTTP를 HTTPS로 변환
+            // generatedLinkUrl = generatedLinkUrl.replace(/^http:\/\//i, 'https://');
             
             resultItem.innerHTML = `
                 <div class="generated-link">
@@ -670,7 +713,13 @@
                 linkElement.addEventListener('click', function(e) {
                     e.preventDefault();
                     const previewFrame = document.getElementById('preview-frame');
-                    if (previewFrame && this.href && !this.href.includes('❌')) {
+                    const previewSection = document.querySelector('.preview-section');
+                    
+                    if (previewSection.classList.contains('folded')) {
+                        // 미리보기가 접혀있을 때는 새 탭으로 열기
+                        window.open(this.href, '_blank');
+                    } else if (previewFrame && this.href && !this.href.includes('❌')) {
+                        // 미리보기가 펼쳐져 있을 때는 iframe에 표시
                         previewFrame.src = this.href;
                     }
                 });
