@@ -337,7 +337,80 @@
         }
 
         
+        
+
+        
+        /* Navigation menu for mobile and tablet */
+        .mobile-nav {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+            z-index: 1000;
+            padding: 12px;
+            border-bottom: 1px solid rgba(52, 152, 219, 0.2);
+        }
+        
+        .mobile-nav ul {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            justify-content: space-around;
+            gap: 8px;
+        }
+        
+        .mobile-nav li {
+            flex: 1;
+            margin: 0;
+        }
+        
+        .mobile-nav a {
+            text-decoration: none;
+            color: #2c3e50;
+            font-weight: 600;
+            font-size: 13px;
+            padding: 10px 8px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            display: block;
+            text-align: center;
+            background: white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid rgba(52, 152, 219, 0.1);
+        }
+        
+        .mobile-nav a:hover {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.2);
+        }
+        
+        .mobile-nav a.active {
+            background: linear-gradient(135deg, #3498db, #2980b9);
+            color: white;
+            box-shadow: 0 4px 8px rgba(52, 152, 219, 0.2);
+        }
+
+
+
+
+
+
+
         @media screen and (max-width: 1024px) {
+            .mobile-nav {
+                display: block !important;
+            }
+            
+            body {
+                padding-top: 65px !important;
+            }
+
             .container {
                 flex-direction: column;
             }
@@ -409,14 +482,28 @@
             .generated-link a {
                 font-size: 12px;
             }
+            .mobile-nav a {
+                font-size: 12px;
+                padding: 8px 6px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Add mobile navigation menu -->
+    <nav class="mobile-nav">
+        <ul>
+            <li><a href="#header-section" class="nav-link">설정</a></li>
+            <li><a href="#template-section" class="nav-link">템플릿</a></li>
+            <li><a href="#result-section" class="nav-link">결과</a></li>
+            <!-- <li><a href="#preview-section" class="nav-link">미리보기</a></li> -->
+        </ul>
+    </nav>
+
     <h1>FKR Trade 링크 생성기</h1>
     
     <div class="container">
-        <div class="header-section">
+        <div id="header-section" class="header-section">
             <label for="base-url">BASE URL</label>
             <input type="text" id="base-url" placeholder="https://example.com" />
             
@@ -473,7 +560,7 @@
 
         <div class="content-section">
             
-            <div class="template-section">
+            <div class="template-section" id="template-section">
                 <div class="list-header">
                     <!-- <div class="fold-button" title="접기/펼치기">
                         <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -515,7 +602,7 @@
             </div>
             </div>
             
-            <div class="result-section">
+            <div class="result-section" id="result-section">
                 <div class="list-header">
                     <div></div>
                     <div>생성된 링크 (클릭하면 미리보기에 표시됩니다)</div>
@@ -529,7 +616,7 @@
                 </ul>
             </div>
             
-            <div class="preview-section">
+            <div class="preview-section" id="preview-section">
                 <div class="list-header show flex">
                     <div class="fold-button" title="미리보기 접기/펼치기">
                         <svg xmlns="http://www.w3.org/2000/svg" height="16" viewBox="0 0 24 24" fill="currentColor">
@@ -581,6 +668,83 @@
         //         foldButton.classList.add('folded');
         //     }
         // }
+
+
+        
+        // 모바일 네비게이션 기능 추가
+        function initMobileNav() {
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            // 네비게이션 링크 클릭 이벤트 처리
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // 모든 링크에서 active 클래스 제거
+                    navLinks.forEach(l => l.classList.remove('active'));
+                    
+                    // 클릭된 링크에 active 클래스 추가
+                    this.classList.add('active');
+                    
+                    // 대상 섹션으로 스크롤
+                    const targetId = this.getAttribute('href');
+                    const targetElement = document.querySelector(targetId);
+                    
+                    if (targetElement) {
+                        // 스크롤 애니메이션
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 60, // 네비게이션 높이만큼 오프셋 적용
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
+            
+            // 스크롤 이벤트에 따라 현재 섹션 하이라이트
+            window.addEventListener('scroll', function() {
+                const scrollPosition = window.scrollY + 70; // 네비게이션 높이 + 여유 공간
+                
+                // 각 섹션의 위치 확인
+                const sections = [
+                    document.getElementById('header-section'),
+                    document.getElementById('template-section'),
+                    document.getElementById('result-section'),
+                    document.getElementById('preview-section')
+                ];
+                
+                // 현재 보이는 섹션 찾기
+                let currentSection = null;
+                
+                sections.forEach(section => {
+                    if (section) {
+                        const sectionTop = section.offsetTop;
+                        const sectionBottom = sectionTop + section.offsetHeight;
+                        
+                        if (scrollPosition >= sectionTop && scrollPosition < sectionBottom) {
+                            currentSection = section.id;
+                        }
+                    }
+                });
+                
+                // 해당 네비게이션 링크 활성화
+                if (currentSection) {
+                    navLinks.forEach(link => {
+                        link.classList.remove('active');
+                        if (link.getAttribute('href') === '#' + currentSection) {
+                            link.classList.add('active');
+                        }
+                    });
+                }
+            });
+            
+            // 초기 로드 시 현재 섹션 하이라이트
+            setTimeout(() => {
+                window.dispatchEvent(new Event('scroll'));
+            }, 100);
+        }
+        
+        // 모바일 네비게이션 초기화
+        initMobileNav();
 
         
         // 미리보기 섹션 폴딩 기능 추가
