@@ -989,12 +989,31 @@
                     const previewFrame = document.getElementById('preview-frame');
                     const previewSection = document.querySelector('.preview-section');
                     
-                    if (previewSection.classList.contains('folded')) {
-                        // 미리보기가 접혀있을 때는 새 탭으로 열기
-                        window.open(this.href, '_blank');
-                    } else if (previewFrame && this.href && !this.href.includes('❌')) {
-                        // 미리보기가 펼쳐져 있을 때는 iframe에 표시
-                        previewFrame.src = this.href;
+                    // 링크에 /ins 또는 /del이 포함되어 있는지 확인
+                    if (this.href.includes('/ins') || this.href.includes('/del')) {
+                        // 확인 대화상자 표시
+                        const action = this.href.includes('/ins') ? '추가' : '삭제';
+                        const confirmMessage = `이 링크는 ${action} 작업을 수행합니다. 계속하시겠습니까?`;
+                        
+                        if (confirm(confirmMessage)) {
+                            // 사용자가 확인한 경우
+                            if (previewSection.classList.contains('folded')) {
+                                // 미리보기가 접혀있을 때는 새 탭으로 열기
+                                window.open(this.href, '_blank');
+                            } else if (previewFrame && !this.href.includes('❌')) {
+                                // 미리보기가 펼쳐져 있을 때는 iframe에 표시
+                                previewFrame.src = this.href;
+                            }
+                        }
+                    } else {
+                        // 일반 링크인 경우 기존 로직 실행
+                        if (previewSection.classList.contains('folded')) {
+                            // 미리보기가 접혀있을 때는 새 탭으로 열기
+                            window.open(this.href, '_blank');
+                        } else if (previewFrame && this.href && !this.href.includes('❌')) {
+                            // 미리보기가 펼쳐져 있을 때는 iframe에 표시
+                            previewFrame.src = this.href;
+                        }
                     }
                 });
             }
