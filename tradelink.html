@@ -990,9 +990,10 @@
                     const previewSection = document.querySelector('.preview-section');
                     
                     // 링크에 /ins 또는 /del이 포함되어 있는지 확인
-                    if (this.href.includes('/ins') || this.href.includes('/del')) {
+                    if (this.href.includes('/ins') || this.href.includes('/del') || this.href.includes('/trade') || this.href.includes('/top') || this.href.includes('/bottom') || this.href.includes('/usey') || this.href.includes('/usen')) {
                         // 확인 대화상자 표시
-                        const action = this.href.includes('/ins') ? '추가' : '삭제';
+                        // const action = this.href.includes('/ins') ? '추가' : '삭제';
+                        const action = "데이터 변경되는";
                         const confirmMessage = `이 링크는 ${action} 작업을 수행합니다. 계속하시겠습니까?`;
                         
                         if (confirm(confirmMessage)) {
