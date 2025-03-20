@@ -1,0 +1,241 @@
+//@version=6
+indicator("Combined Indicators [DeMARK+UTBot+VIDYA]", "Combined", overlay = true, max_boxes_count = 500, max_lines_count = 500, max_bars_back = 500, max_labels_count = 500)
+
+// =================== Input Parameters ===================
+// DeMARK Settings
+per = input.float(10., 'DeMARK Threshold %', minval = 0, maxval = 100, group="DeMARK")
+div = input.int(50, 'DeMARK Resolution', minval = 2, maxval = 500, group="DeMARK")
+tf  = input.timeframe('', 'DeMARK Intrabar TF', group="DeMARK")
+
+// UT Bot Settings
+ut_key = input.float(1, "UT Key Value (Sensitivity)", group="UT Bot")
+ut_atr_period = input.int(10, "UT ATR Period", group="UT Bot")
+ut_heikin = input.bool(false, "UT Signals from Heikin Ashi", group="UT Bot")
+
+// VIDYA Settings
+vidya_length = input.int(10, 'VIDYA Length', group="VIDYA")
+vidya_momentum = input.int(20, 'VIDYA Momentum', group="VIDYA")
+band_distance = input.float(2, 'VIDYA Band Distance', step = 0.1, group="VIDYA")
+source = input.source(close, 'VIDYA Source', group="VIDYA")
+
+// Color Settings
+showSupply = input.bool(true, 'Supply', inline='supply', group='DeMARK Style')
+supplyCss = input.color(#5ffae0, '', inline='supply', group='DeMARK Style')
+supplyArea = input.bool(true, 'Area', inline='supply', group='DeMARK Style')
+supplyAvg = input.bool(true, 'Average', inline='supply', group='DeMARK Style')
+supplyWavg = input.bool(true, 'Weighted', inline='supply', group='DeMARK Style')
+
+showDemand = input.bool(true, 'Demand', inline='demand', group='DeMARK Style')
+demandCss = input.color(#c22ed0, '', inline='demand', group='DeMARK Style')
+demandArea = input.bool(true, 'Area', inline='demand', group='DeMARK Style')
+demandAvg = input.bool(true, 'Average', inline='demand', group='DeMARK Style')
+demandWavg = input.bool(true, 'Weighted', inline='demand', group='DeMARK Style')
+
+up_trend_color = input.color(#17dfad, 'VIDYA Up', group='VIDYA Style')
+down_trend_color = input.color(#dd326b, 'VIDYA Down', group='VIDYA Style')
+shadow = input.bool(true, 'VIDYA Shadow', group='VIDYA Style')
+
+// =================== Type Definitions ===================
+type bin
+    float lvl
+    float prev
+    float sum
+    float prev_sum
+    float csum
+    float avg
+    bool isreached
+
+type area
+    box bx
+    line avg
+    line wavg
+
+// =================== Functions ===================
+get_hlv()=> [high, low, volume]
+
+method set_area(area id, x1, top, btm, avg, wavg, showArea, showAvg, showWavg)=>
+    if showArea
+        id.bx.set_lefttop(x1, top)
+        id.bx.set_rightbottom(bar_index, btm)    
+    
+    if showAvg
+        id.avg.set_xy1(x1, avg)
+        id.avg.set_xy2(bar_index, avg)
+    
+    if showWavg
+        id.wavg.set_xy1(x1, wavg)
+        id.wavg.set_xy2(bar_index, wavg)
+
+vidya_calc(src, vidya_length, vidya_momentum) =>
+    float momentum = ta.change(src)
+    float sum_pos_momentum = math.sum(momentum >= 0 ? momentum : 0.0, vidya_momentum)
+    float sum_neg_momentum = math.sum(momentum >= 0 ? 0.0 : -momentum, vidya_momentum)
+    float abs_cmo = math.abs(100 * (sum_pos_momentum - sum_neg_momentum) / (sum_pos_momentum + sum_neg_momentum))
+    float alpha = 2 / (vidya_length + 1)
+    var float vidya_value = 0.0
+    vidya_value := alpha * abs_cmo / 100 * src + (1 - alpha * abs_cmo / 100) * nz(vidya_value[1])
+    ta.sma(vidya_value, 15)
+
+// =================== DeMARK Logic ===================
+var max = 0.
+var min = 0.
+var x1 = 0
+var csum = 0.
+
+var area supply_area = na
+var area demand_area = na
+
+[h, l, v] = request.security_lower_tf(syminfo.tickerid, tf, get_hlv())
+
+max := math.max(high[1], max)
+min := math.min(low[1], min)
+csum += volume[1]
+
+var float supply_wavg = na
+var float demand_wavg = na
+
+
+if dayofmonth != dayofmonth[1] and month != month[1]
+    r = (max - min) / div
+    supply = bin.new(max, max, 0, 0, 0, 0, false)
+    demand = bin.new(min, min, 0, 0, 0, 0, false)
+
+    for i = 0 to div-1
+        supply.lvl -= r
+        demand.lvl += r
+        
+        for j = 1 to (bar_index - x1)-1
+            for k = 0 to (v[j]).size()-1
+                supply.sum      += (h[j]).get(k) > supply.lvl and (h[j]).get(k) < supply.prev ? (v[j]).get(k) : 0
+                supply.avg      += supply.lvl * (supply.sum - supply.prev_sum)
+                supply.csum     += supply.sum - supply.prev_sum
+                supply.prev_sum := supply.sum
+
+                demand.sum      += (l[j]).get(k) < demand.lvl and (l[j]).get(k) > demand.prev ? (v[j]).get(k) : 0
+                demand.avg      += demand.lvl * (demand.sum - demand.prev_sum)
+                demand.csum     += demand.sum - demand.prev_sum
+                demand.prev_sum := demand.sum
+                
+            if supply.sum / csum * 100 > per and not supply.isreached
+                avg = math.avg(max, supply.lvl)
+                supply_wavg := supply.avg / supply.csum
+
+                if showSupply
+                    supply_area := area.new(
+                      box.new(na, na, na, na, na, bgcolor = color.new(supplyCss, 95))
+                      , line.new(na, na, na, na, color = supplyCss)
+                      , line.new(na, na, na, na, color = supplyCss, style = line.style_dashed))
+
+                    supply_area.set_area(x1, max, supply.lvl, avg, supply_wavg, supplyArea, supplyAvg, supplyWavg)
+
+                supply.isreached := true
+            
+            if demand.sum / csum * 100 > per and not demand.isreached
+                avg = math.avg(min, demand.lvl)
+                demand_wavg := demand.avg / demand.csum
+                
+                if showDemand
+                    demand_area := area.new(
+                      box.new(na, na, na, na, na, bgcolor = color.new(demandCss, 95))
+                      , line.new(na, na, na, na, color = demandCss)
+                      , line.new(na, na, na, na, color = demandCss, style = line.style_dashed))
+                    
+                    demand_area.set_area(x1, demand.lvl, min, avg, demand_wavg, demandArea, demandAvg, demandWavg)
+
+                demand.isreached := true
+            
+            if supply.isreached and demand.isreached
+                break
+        
+        supply.prev := supply.lvl
+        demand.prev := demand.lvl
+    
+    max := high
+    min := low
+    csum := volume
+    x1 := bar_index
+
+// ... [Rest of DeMARK logic remains the same] ...
+
+// =================== UT Bot Logic ===================
+xATR = ta.atr(ut_atr_period)
+nLoss = ut_key * xATR
+
+ut_src = ut_heikin ? request.security(ticker.heikinashi(syminfo.tickerid), timeframe.period, close) : close
+
+xATRTrailingStop = 0.0
+xATRTrailingStop := if ut_src > nz(xATRTrailingStop[1], 0) and ut_src[1] > nz(xATRTrailingStop[1], 0)
+    math.max(nz(xATRTrailingStop[1]), ut_src - nLoss)
+else
+    if ut_src < nz(xATRTrailingStop[1], 0) and ut_src[1] < nz(xATRTrailingStop[1], 0)
+        math.min(nz(xATRTrailingStop[1]), ut_src + nLoss)
+    else
+        if ut_src > nz(xATRTrailingStop[1], 0)
+            ut_src - nLoss
+        else
+            ut_src + nLoss
+
+var int pos = 0   
+pos := if ut_src[1] < nz(xATRTrailingStop[1], 0) and ut_src > nz(xATRTrailingStop[1], 0)
+    1
+else
+    if ut_src[1] > nz(xATRTrailingStop[1], 0) and ut_src < nz(xATRTrailingStop[1], 0)
+        -1
+    else
+        nz(pos[1], 0)
+
+ema = ta.ema(ut_src, 1)
+above = ta.crossover(ema, xATRTrailingStop)
+below = ta.crossover(xATRTrailingStop, ema)
+
+bool ut_buy = ut_src > xATRTrailingStop and above 
+bool ut_sell = ut_src < xATRTrailingStop and below
+
+color xcolor = pos == -1 ? color.red : pos == 1 ? color.green : color.blue
+
+// Add bar coloring conditions
+bool barbuy = ut_src > xATRTrailingStop 
+bool barsell = ut_src < xATRTrailingStop 
+
+// Add bar color plotting before other plot statements
+barcolor(barbuy ? color.green : barsell ? color.red : na)
+// ... [Rest of UT Bot logic remains the same] ...
+
+
+// =================== VIDYA Logic ===================
+float atr_value = ta.atr(200)
+float vidya_value = vidya_calc(source, vidya_length, vidya_momentum)
+
+float upper_band = vidya_value + atr_value * band_distance
+float lower_band = vidya_value - atr_value * band_distance
+
+var bool is_trend_up = false
+is_trend_up := ta.crossover(source, upper_band) ? true : ta.crossunder(source, lower_band) ? false : is_trend_up
+
+float smoothed_value = vidya_value
+
+// ... [Rest of VIDYA logic remains the same] ...
+
+// =================== Plotting ===================
+// Plot DeMARK zones
+if barstate.islast
+    if showSupply
+        supply_area.bx.set_right(bar_index)
+        supply_area.avg.set_x2(bar_index)
+        supply_area.wavg.set_x2(bar_index)
+    
+    if showDemand
+        demand_area.bx.set_right(bar_index)
+        demand_area.avg.set_x2(bar_index)
+        demand_area.wavg.set_x2(bar_index)
+
+// Plot UT Bot signals
+plotshape(ut_buy, title="UT Buy", text="Buy", style=shape.labelup, location=location.belowbar, color=color.green, textcolor=color.white, size=size.tiny)
+plotshape(ut_sell, title="UT Sell", text="Sell", style=shape.labeldown, location=location.abovebar, color=color.red, textcolor=color.white, size=size.tiny)
+
+// Plot VIDYA
+plot(smoothed_value, "VIDYA", color=is_trend_up ? up_trend_color : down_trend_color, linewidth=2, style=plot.style_linebr)
+
+// Add alerts
+alertcondition(ut_buy, "UT Long", "UT Long")
+alertcondition(ut_sell, "UT Short", "UT Short")
