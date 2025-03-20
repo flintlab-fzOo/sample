@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Candlestick Chart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+
+        #chartContainer {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        #myCanvas {
+            border: 1px solid #ccc;
+            background-color: #fff;
+            cursor: crosshair;
+        }
+
+        #labelContainer {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #fff;
+            border-left: 1px solid #ccc;
+        }
+
+        #labelCanvas {
+            background-color: #fff;
+        }
+
+        .tooltip {
+            position: fixed;
+            background-color: rgba(255, 255, 255, 0.9);
+            border: 1px solid #ccc;
+            padding: 8px;
+            display: none;
+            pointer-events: none;
+            font-size: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-radius: 4px;
+        }
+
+        button {
+            padding: 10px 20px;
+            margin: 20px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        .selection-overlay {
+            position: absolute;
+            background-color: rgba(0, 123, 255, 0.2);
+            border: 1px solid #007bff;
+            pointer-events: none;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Chart Controls -->
+    <div class="controls">
+        <button id="addDataBtn">Add Random Data</button>
+    </div>
+
+    <!-- Chart Container -->
+    <div id="chartContainer">
+        <!-- Main Chart Canvas -->
+        <canvas id="myCanvas" height="400"></canvas>
+        
+        <!-- Price Labels Container -->
+        <div id="labelContainer">
+            <canvas id="labelCanvas" width="50" height="400"></canvas>
+        </div>
+        
+        <!-- UI Overlays -->
+        <div class="tooltip" id="tooltip"></div>
+        <div class="selection-overlay" id="selectionOverlay"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="candlestickChart.js"></script>
+    <script>
+        // Initialize chart when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            // Initial chart data
+            const initialData = [
+                { date: '2024-12-01', Open: 100, High: 110, Low: 90, Close: 105 },
+                { date: '2024-12-02', Open: 105, High: 115, Low: 95, Close: 110 },
+                { date: '2024-12-03', Open: 110, High: 120, Low: 100, Close: 115 },
+                { date: '2024-12-04', Open: 115, High: 125, Low: 105, Close: 120 },
+                { date: '2024-12-05', Open: 120, High: 130, Low: 110, Close: 125 }
+            ];
+            
+            // Create chart instance
+            const chart = new CandlestickChart('#chartContainer', initialData);
+            
+            // Add button event listener
+            document.getElementById('addDataBtn').addEventListener('click', () => {
+                chart.addRandomData();
+            });
+        });
+    </script>
+</body>
+</html>
