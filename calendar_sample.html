@@ -7,6 +7,7 @@
     <style>
         :root {
             --primary-color: #1a73e8;
+            --primary-color1:rgba(26, 115, 232, 0.165);
             --border-color: #dadce0;
             --hover-bg: #f1f3f4;
         }
@@ -165,9 +166,20 @@
             border-bottom: 1px solid var(--border-color);
             background: white;
         }
-        
+        .day-cell.holiday {
+            background-color: #e8ada82e;  /* 엷은 빨간색 배경 추가 */
+        }
         .day-cell:last-child {
             border-right: none;
+        }
+        .day-cell.holiday .day-number {
+            color: #ea4335 !important;  /* 빨간색으로 표시 */
+        }
+        
+        .holiday-name {
+            font-size: 11px;
+            color: #ea4335;
+            margin-top: 2px;
         }
         
         .day-number {
@@ -177,14 +189,15 @@
         }
         
         .today .day-number {
-            background-color: var(--primary-color);
+            background-color: var(--primary-color1);
             color: white !important;
             width: 24px;
             height: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 50%;
+            border-radius: 40%;
+            border:1px solid var(--primary-color1);
         }
         
         .other-month {
@@ -269,6 +282,15 @@
             font-weight: 500;
             margin-top: 4px;
         }
+        .week-day-header.holiday,
+        .day-view.holiday {
+            background-color: #e8ada82e;
+        }
+        
+        .week-day-header.holiday,
+        .holiday .time-marker {
+            color: #ea4335 !important;
+        }
         
         .today-header .week-day-number {
             background-color: var(--primary-color);
@@ -291,6 +313,10 @@
             height: 40px;
             border-bottom: 1px solid var(--border-color);
             position: relative;
+        }
+        .week-time-slot.holiday,
+        .time-slot.holiday {
+            background-color: #e8ada82e;
         }
         
         /* 일별 뷰 스타일 */
@@ -339,9 +365,9 @@
         
         .time-event {
             position: absolute;
-            left: 0;          /* Add this line */
-            right: 0;         /* Add this line */
-            margin: 0 4px;    /* Add this line */
+            left: 0;
+            right: 0;
+            margin: 0 4px;
             color: white;
             border-radius: 4px;
             padding: 4px 8px;
@@ -525,6 +551,47 @@
                 width: 95%;
                 padding: 16px;
             }
+
+
+            .event-more-icon {
+            text-align: center;
+            color: #70757a;
+            padding: 2px;
+            cursor: pointer;
+            font-size: 14px;
+            position: relative;
+        }
+        
+        .event-more-icon:hover {
+            color: #202124;
+        }
+        
+        .event-tooltip {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 10;
+            width: max-content;
+            max-width: 200px;
+        }
+        
+        .event-more-icon:hover .event-tooltip {
+            display: block;
+        }
+        
+        .tooltip-event {
+            padding: 4px 0;
+            font-size: 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
     </style>
 </head>
@@ -581,7 +648,10 @@
         const modalTime = document.getElementById('modalTime');
         const modalContent = document.getElementById('modalContent');
         const modalCategory = document.getElementById('modalCategory');
-        
+        const holidays = [
+            {date:"2025-03-01", name:"삼일절"},
+            {date:"2025-03-22", name:"test"},
+        ]
         // 샘플 데이터 (실제로는 localStorage에서 가져옴)
         const sampleEvents = [
             {date:"2024-03-05", time_start:"0105", time_end:"0731", title:"테스트 제목", content:"데이터 테스트", category:"work"},
@@ -591,6 +661,8 @@
             {date:"2025-03-23", time_start:"0900", time_end:"1000", title:"아침 미팅", content:"주간 업무 계획 수립 회의\n회의실: 3층 대회의실", category:"work"},
             {date:"2025-03-23", time_start:"1100", time_end:"1200", title:"웹사이트 디자인 검토", content:"신규 웹사이트 디자인 검토 회의\n주요 논의사항: 색상 팔레트, 레이아웃 결정", category:"work"},
             {date:"2025-03-23", time_start:"1500", time_end:"1600", title:"헬스장", content:"개인 PT 세션\n트레이너: 김트레이너", category:"health"},
+            {date:"2025-03-23", time_start:"1700", time_end:"1800", title:"헬스장", content:"개인 PT 세션\n트레이너: 김트레이너", category:"health"},
+            {date:"2025-03-23", time_start:"1800", time_end:"1900", title:"헬스장", content:"개인 PT 세션\n트레이너: 김트레이너", category:"health"},
             {date:"2025-03-24", time_start:"1000", time_end:"1130", title:"의사 예약", content:"정기 건강 검진\n병원: 서울 메디컬 센터", category:"health"},
             {date:"2025-03-24", time_start:"1300", time_end:"1400", title:"점심 약속", content:"팀원들과 점심 식사\n메뉴: 이탈리안", category:"personal"},
             {date:"2025-03-24", time_start:"1600", time_end:"1700", title:"화상 회의", content:"해외 지사와 화상 회의\n주제: 글로벌 마케팅 전략", category:"work"},
@@ -734,13 +806,21 @@
             const today = new Date();
             for (let i = 1; i <= lastDay.getDate(); i++) {
                 const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), i);
+                const dateStr = formatDate(date);
                 const dayOfWeek = date.getDay();
                 const isToday = today.getFullYear() === date.getFullYear() && 
                                today.getMonth() === date.getMonth() && 
                                today.getDate() === i;
                 
-                html += `<div class="day-cell ${isToday ? 'today' : ''}" data-day="${dayOfWeek}" data-date="${formatDate(date)}">
+                // 휴일 체크
+                const holiday = holidays.find(h => h.date === dateStr);
+                const isHoliday = holiday || dayOfWeek === 0;  // 일요일이거나 공휴일
+                
+                html += `<div class="day-cell ${isToday ? 'today' : ''} ${isHoliday ? 'holiday' : ''}" 
+                             data-day="${dayOfWeek}" 
+                             data-date="${dateStr}">
                             <div class="day-number">${i}</div>
+                            ${holiday ? `<div class="holiday-name">${holiday.name}</div>` : ''}
                             <div class="day-events"></div>
                         </div>`;
             }
@@ -797,14 +877,20 @@
             for (let i = 0; i < 7; i++) {
                 const date = new Date(startDate);
                 date.setDate(startDate.getDate() + i);
+                const dateStr = formatDate(date);
                 
                 const isToday = today.getFullYear() === date.getFullYear() && 
                                 today.getMonth() === date.getMonth() && 
                                 today.getDate() === date.getDate();
                 
-                html += `<div class="week-day-header ${isToday ? 'today-header' : ''}" data-date="${formatDate(date)}">
+                // 휴일 체크 추가
+                const holiday = holidays.find(h => h.date === dateStr);
+                const isHoliday = holiday || date.getDay() === 0;  // 일요일이거나 공휴일
+                
+                html += `<div class="week-day-header ${isToday ? 'today-header' : ''} ${isHoliday ? 'holiday' : ''}" data-date="${dateStr}">
                             ${weekdayNames[i]}
                             <div class="week-day-number">${date.getDate()}</div>
+                            ${holiday ? `<div class="holiday-name">${holiday.name}</div>` : ''}
                         </div>`;
             }
             
@@ -816,7 +902,12 @@
                 for (let i = 0; i < 7; i++) {
                     const date = new Date(startDate);
                     date.setDate(startDate.getDate() + i);
-                    html += `<div class="week-time-slot" data-hour="${hour}" data-date="${formatDate(date)}"></div>`;
+                    const dateStr = formatDate(date);
+                    const holiday = holidays.find(h => h.date === dateStr);
+                    const isHoliday = holiday || date.getDay() === 0;
+                    
+                    html += `<div class="week-time-slot ${isHoliday ? 'holiday' : ''}" 
+                            data-hour="${hour}" data-date="${dateStr}"></div>`;
                 }
             }
             
@@ -911,6 +1002,31 @@
                             showEventModal(sortedEvents[maxVisibleEvents]);
                         });
                         
+                        dayEvents.appendChild(moreEl);
+                    }
+                    
+                    // 더 많은 이벤트가 있으면 아이콘으로 표시
+                    if (sortedEvents.length > maxVisibleEvents) {
+                        const moreEl = document.createElement('div');
+                        moreEl.className = 'event-more-icon';
+                        moreEl.innerHTML = '⋮'; // 수직 점 3개 아이콘
+                        
+                        // 툴팁 생성
+                        const tooltipEl = document.createElement('div');
+                        tooltipEl.className = 'event-tooltip';
+                        
+                        // 나머지 이벤트들을 툴팁에 추가
+                        sortedEvents.slice(maxVisibleEvents).forEach(event => {
+                            const tooltipEvent = document.createElement('div');
+                            tooltipEvent.className = 'tooltip-event';
+                            tooltipEvent.innerHTML = `
+                                <span style="color: ${getCategoryColor(event.category)}">●</span>
+                                ${formatTime(event.time_start)} ${event.title}
+                            `;
+                            tooltipEl.appendChild(tooltipEvent);
+                        });
+                        
+                        moreEl.appendChild(tooltipEl);
                         dayEvents.appendChild(moreEl);
                     }
                 }
