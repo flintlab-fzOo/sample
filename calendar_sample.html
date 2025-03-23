@@ -1125,6 +1125,10 @@
         // 현재 시간 표시선 추가
         function addCurrentTimeLine() {
             if (currentView === 'day' || currentView === 'week') {
+                // 기존 시간 표시선 제거
+                const existingLines = document.querySelectorAll('.current-time-line, .current-time-marker');
+                existingLines.forEach(line => line.remove());
+
                 const now = new Date();
                 const currentHour = now.getHours();
                 const currentMinute = now.getMinutes();
