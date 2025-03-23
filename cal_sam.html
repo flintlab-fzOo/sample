@@ -7,8 +7,8 @@
     <style>
         :root {
             --primary-color: #1a73e8;
+            --primary-hover: #1557b0;
             --border-color: #dadce0;
-            --hover-bg: #f1f3f4;
         }
         
         * {
@@ -50,19 +50,28 @@
         
         .view-buttons {
             display: flex;
-            gap: 8px;
+            gap: 4px;
         }
         
         .view-button {
-            background: white;
+            padding: 8px 16px;
             border: 1px solid var(--border-color);
+            background: white;
             cursor: pointer;
             border-radius: 18px;
-            padding: 8px 16px;
             font-size: 14px;
             font-weight: 500;
             transition: all 0.2s ease;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+        }
+        
+        .view-button:hover {
+            background: var(--hover-bg);
+        }
+        
+        .view-button.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
         }
         
         .date-nav {
@@ -156,9 +165,20 @@
             border-bottom: 1px solid var(--border-color);
             background: white;
         }
-        
+        .day-cell.holiday {
+            background-color: #e8ada82e;  /* 엷은 빨간색 배경 추가 */
+        }
         .day-cell:last-child {
             border-right: none;
+        }
+        .day-cell.holiday .day-number {
+            color: #ea4335 !important;  /* 빨간색으로 표시 */
+        }
+        
+        .holiday-name {
+            font-size: 11px;
+            color: #ea4335;
+            margin-top: 2px;
         }
         
         .day-number {
@@ -168,14 +188,15 @@
         }
         
         .today .day-number {
-            background-color: var(--primary-color);
+            background-color: var(--primary-color1);
             color: white !important;
             width: 24px;
             height: 24px;
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: 50%;
+            border-radius: 40%;
+            border:1px solid var(--primary-color1);
         }
         
         .other-month {
@@ -189,6 +210,33 @@
         
         .day-events {
             margin-top: 5px;
+        }
+        
+        .event {
+            margin-bottom: 4px;
+            padding: 2px 4px;
+            font-size: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            color: white;
+            transition: all 0.2s ease;
+        }
+        
+        .event:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .event-time {
+            font-weight: 500;
+            margin-right: 4px;
+        }
+        
+        .event-title {
+            font-weight: 400;
         }
         
         /* 주별 뷰 스타일 */
@@ -233,6 +281,15 @@
             font-weight: 500;
             margin-top: 4px;
         }
+        .week-day-header.holiday,
+        .day-view.holiday {
+            background-color: #e8ada82e;
+        }
+        
+        .week-day-header.holiday,
+        .holiday .time-marker {
+            color: #ea4335 !important;
+        }
         
         .today-header .week-day-number {
             background-color: var(--primary-color);
@@ -255,6 +312,10 @@
             height: 40px;
             border-bottom: 1px solid var(--border-color);
             position: relative;
+        }
+        .week-time-slot.holiday,
+        .time-slot.holiday {
+            background-color: #e8ada82e;
         }
         
         /* 일별 뷰 스타일 */
@@ -303,9 +364,9 @@
         
         .time-event {
             position: absolute;
-            left: 0;          /* Add this line */
-            right: 0;         /* Add this line */
-            margin: 0 4px;    /* Add this line */
+            left: 0;
+            right: 0;
+            margin: 0 4px;
             color: white;
             border-radius: 4px;
             padding: 4px 8px;
@@ -346,18 +407,34 @@
         .modal {
             display: none;
             position: fixed;
-            z-index: 100;
+            z-index: 1100;
             left: 0;
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
-            animation: fadeIn 0.3s ease;
+            background-color: rgba(0, 0, 0, 0.5);
+            animation: fadeIn 0.2s ease;
         }
-        
+
+        .modal-content {
+            background-color: white;
+            margin: 5vh auto;
+            padding: 24px;
+            border-radius: 8px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: var(--modal-shadow);
+            animation: slideUp 0.3s ease;
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
         
         .modal-content {
@@ -489,6 +566,175 @@
                 width: 95%;
                 padding: 16px;
             }
+
+
+            .event-more-icon {
+            text-align: center;
+            color: #70757a;
+            padding: 2px;
+            cursor: pointer;
+            font-size: 14px;
+            position: relative;
+        }
+        
+        .event-more-icon:hover {
+            color: #202124;
+        }
+        
+        .event-tooltip {
+            display: none;
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            z-index: 10;
+            width: max-content;
+            max-width: 200px;
+        }
+        
+        .event-more-icon:hover .event-tooltip {
+            display: block;
+        }
+        
+        .tooltip-event {
+            padding: 4px 0;
+            font-size: 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* Add Event Button */
+        .add-event-btn {
+            position: fixed;
+            right: 24px;
+            bottom: 24px;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            font-size: 32px;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            padding: 0;
+            line-height: 0;
+            font-family: Arial, sans-serif;
+            outline: none;
+            user-select: none;
+        }
+        
+        .add-event-btn:hover {
+            background-color: #1557b0;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+
+        .add-event-btn:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Event Form Modal */
+        .event-form {
+            display: grid;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: grid;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: #202124;
+            font-size: 14px;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            padding: 8px 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(26, 115, 232, 0.2);
+        }
+
+        .form-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+            margin-top: 24px;
+        }
+
+        .btn {
+            padding: 8px 16px;
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+        }
+
+        .btn-secondary {
+            background-color: #5f6368;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background-color: #494d51;
+        }
+
+        .close {
+            color: #5f6368;
+            font-size: 24px;
+            font-weight: 400;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .close:hover {
+            color: #202124;
         }
     </style>
 </head>
@@ -512,6 +758,7 @@
         
         <div class="calendar" id="calendarContainer"></div>
     </div>
+    <button class="add-event-btn" id="addEventBtn">+</button>
     
     <div class="modal" id="eventModal">
         <div class="modal-content">
@@ -522,6 +769,54 @@
             <div class="modal-time" id="modalTime"></div>
             <div class="modal-body" id="modalContent"></div>
             <div class="modal-category" id="modalCategory"></div>
+        </div>
+    </div>
+
+    
+    <!-- Event Form Modal -->
+    <div class="modal" id="eventFormModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="formModalTitle">일정 추가</div>
+                <span class="close" id="closeFormModal">&times;</span>
+            </div>
+            <form id="eventForm" class="event-form">
+                <div class="form-group">
+                    <label for="eventTitle">제목</label>
+                    <input type="text" id="eventTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="eventDate">날짜</label>
+                    <input type="date" id="eventDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="eventTimeStart">시작 시간</label>
+                    <input type="time" id="eventTimeStart" required>
+                </div>
+                <div class="form-group">
+                    <label for="eventTimeEnd">종료 시간</label>
+                    <input type="time" id="eventTimeEnd" required>
+                </div>
+                <div class="form-group">
+                    <label for="eventCategory">카테고리</label>
+                    <select id="eventCategory" required>
+                        <option value="work">업무</option>
+                        <option value="personal">개인</option>
+                        <option value="health">건강</option>
+                        <option value="education">교육</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="eventContent">내용</label>
+                    <textarea id="eventContent" rows="4"></textarea>
+                </div>
+                <input type="hidden" id="eventId">
+                <div class="form-buttons">
+                    <button type="button" class="btn btn-danger" id="deleteEventBtn" style="display: none;">삭제</button>
+                    <button type="button" class="btn btn-secondary" id="cancelEventBtn">취소</button>
+                    <button type="submit" class="btn btn-primary" id="saveEventBtn">저장</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -546,37 +841,136 @@
         const modalContent = document.getElementById('modalContent');
         const modalCategory = document.getElementById('modalCategory');
         
+        const eventFormModal = document.getElementById('eventFormModal');
+        const eventForm = document.getElementById('eventForm');
+        const addEventBtn = document.getElementById('addEventBtn');
+        const closeFormModal = document.getElementById('closeFormModal');
+        const deleteEventBtn = document.getElementById('deleteEventBtn');
+        const cancelEventBtn = document.getElementById('cancelEventBtn');
+        const formModalTitle = document.getElementById('formModalTitle');
+        
+        // Show event form for creating new event
+        function showEventForm(date = new Date()) {
+            formModalTitle.textContent = '일정 추가';
+            eventForm.reset();
+            deleteEventBtn.style.display = 'none';
+            document.getElementById('eventDate').value = formatDate(date);
+            eventFormModal.style.display = 'block';
+        }
+
+        // Show event form for editing existing event
+        function showEditEventForm(event) {
+            formModalTitle.textContent = '일정 수정';
+            document.getElementById('eventId').value = event.date + event.time_start; // Unique ID
+            document.getElementById('eventTitle').value = event.title;
+            document.getElementById('eventDate').value = event.date;
+            document.getElementById('eventTimeStart').value = formatTime(event.time_start);
+            document.getElementById('eventTimeEnd').value = formatTime(event.time_end);
+            document.getElementById('eventCategory').value = event.category;
+            document.getElementById('eventContent').value = event.content;
+            deleteEventBtn.style.display = 'block';
+            eventFormModal.style.display = 'block';
+        }
+
+        // Save event
+        function saveEvent(formData) {
+            const events = getEvents();
+            const eventId = formData.get('eventId');
+            const newEvent = {
+                date: formData.get('eventDate'),
+                time_start: formData.get('eventTimeStart').replace(':', ''),
+                time_end: formData.get('eventTimeEnd').replace(':', ''),
+                title: formData.get('eventTitle'),
+                content: formData.get('eventContent'),
+                category: formData.get('eventCategory')
+            };
+
+            if (eventId) {
+                // Update existing event
+                const index = events.findIndex(e => e.date + e.time_start === eventId);
+                if (index !== -1) {
+                    events[index] = newEvent;
+                }
+            } else {
+                // Add new event
+                events.push(newEvent);
+            }
+
+            localStorage.setItem('calendarEvents', JSON.stringify(events));
+            updateView();
+        }
+
+        // Delete event
+        function deleteEvent(eventId) {
+            if (confirm('이 일정을 삭제하시겠습니까?')) {
+                const events = getEvents();
+                const filteredEvents = events.filter(e => e.date + e.time_start !== eventId);
+                localStorage.setItem('calendarEvents', JSON.stringify(filteredEvents));
+                updateView();
+            }
+        }
+
+        // Event listeners
+        addEventBtn.addEventListener('click', () => showEventForm(currentDate));
+
+        closeFormModal.addEventListener('click', () => {
+            eventFormModal.style.display = 'none';
+        });
+
+        cancelEventBtn.addEventListener('click', () => {
+            eventFormModal.style.display = 'none';
+        });
+
+        deleteEventBtn.addEventListener('click', () => {
+            const eventId = document.getElementById('eventId').value;
+            deleteEvent(eventId);
+            eventFormModal.style.display = 'none';
+        });
+
+        eventForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(eventForm);
+            saveEvent(formData);
+            eventFormModal.style.display = 'none';
+        });
+
+        const holidays = [
+            {date:"2025-03-01", name:"삼일절"},
+            {date:"2025-03-22", name:"test"},
+        ]
         // 샘플 데이터 (실제로는 localStorage에서 가져옴)
         const sampleEvents = [
             {date:"2024-03-05", time_start:"0105", time_end:"0731", title:"테스트 제목", content:"데이터 테스트", category:"work"},
             {date:"2024-03-22", time_start:"1000", time_end:"1100", title:"프로젝트 기획 회의", content:"월간 보고서 작성을 위한 프로젝트 기획 회의\n참석자: 김대리, 박과장, 이사원", category:"work"},
             {date:"2024-03-22", time_start:"1400", time_end:"1600", title:"발표 준비", content:"클라이언트 미팅을 위한 발표 자료 준비\n발표 내용: 신규 프로젝트 진행 상황", category:"work"},
             {date:"2024-03-22", time_start:"1900", time_end:"2100", title:"저녁 약속", content:"친구들과 삼겹살 먹기로 한 약속\n장소: 강남역 맛집", category:"personal"},
-            {date:"2024-03-23", time_start:"0900", time_end:"1000", title:"아침 미팅", content:"주간 업무 계획 수립 회의\n회의실: 3층 대회의실", category:"work"},
-            {date:"2024-03-23", time_start:"1100", time_end:"1200", title:"웹사이트 디자인 검토", content:"신규 웹사이트 디자인 검토 회의\n주요 논의사항: 색상 팔레트, 레이아웃 결정", category:"work"},
-            {date:"2024-03-23", time_start:"1500", time_end:"1600", title:"헬스장", content:"개인 PT 세션\n트레이너: 김트레이너", category:"health"},
-            {date:"2024-03-24", time_start:"1000", time_end:"1130", title:"의사 예약", content:"정기 건강 검진\n병원: 서울 메디컬 센터", category:"health"},
-            {date:"2024-03-24", time_start:"1300", time_end:"1400", title:"점심 약속", content:"팀원들과 점심 식사\n메뉴: 이탈리안", category:"personal"},
-            {date:"2024-03-24", time_start:"1600", time_end:"1700", title:"화상 회의", content:"해외 지사와 화상 회의\n주제: 글로벌 마케팅 전략", category:"work"},
-            {date:"2024-03-25", time_start:"0930", time_end:"1030", title:"코드 리뷰", content:"신규 기능 코드 리뷰 세션\n담당자: 개발팀", category:"work"},
-            {date:"2024-03-25", time_start:"1400", time_end:"1500", title:"인터뷰", content:"신입 개발자 인터뷰\n지원자: 3명", category:"work"},
-            {date:"2024-03-25", time_start:"1800", time_end:"2000", title:"영화 관람", content:"신작 영화 관람\n영화관: CGV 용산", category:"personal"},
-            {date:"2024-03-26", time_start:"1000", time_end:"1100", title:"제품 데모", content:"신규 제품 데모 세션\n참석자: 마케팅팀, 영업팀", category:"work"},
-            {date:"2024-03-26", time_start:"1200", time_end:"1300", title:"런치 미팅", content:"신규 파트너십 논의\n장소: 회사 근처 레스토랑", category:"work"},
-            {date:"2024-03-26", time_start:"1500", time_end:"1700", title:"코딩 시간", content:"신규 기능 개발\n- 사용자 인증 기능 구현\n- 대시보드 UI 개선", category:"work"},
-            {date:"2024-03-27", time_start:"0900", time_end:"1000", title:"팀 회의", content:"주간 진행 상황 점검\n논의 사항: 일정 조정, 자원 할당", category:"work"},
-            {date:"2024-03-27", time_start:"1300", time_end:"1400", title:"멘토링 세션", content:"주니어 개발자 멘토링\n주제: 코드 최적화", category:"education"},
-            {date:"2024-03-27", time_start:"1800", time_end:"1900", title:"요가 수업", content:"주간 요가 수업\n강사: 이요가", category:"health"},
-            {date:"2024-03-28", time_start:"1100", time_end:"1200", title:"클라이언트 미팅", content:"신규 클라이언트 미팅\n미팅 장소: 클라이언트 사무실", category:"work"},
-            {date:"2024-03-28", time_start:"1400", time_end:"1600", title:"워크샵", content:"UX 디자인 워크샵\n강사: 김디자인", category:"education"},
-            {date:"2024-03-28", time_start:"1800", time_end:"2000", title:"친구 생일", content:"친구 생일 저녁 식사\n장소: 명동 레스토랑\n선물: 책", category:"personal"},
-            {date:"2024-03-29", time_start:"1000", time_end:"1100", title:"프로젝트 리뷰", content:"월간 프로젝트 리뷰\n담당자: 프로젝트 매니저", category:"work"},
-            {date:"2024-03-29", time_start:"1200", time_end:"1300", title:"팀 런치", content:"팀 빌딩 런치\n장소: 회사 근처 한식당", category:"work"},
-            {date:"2024-03-29", time_start:"1600", time_end:"1700", title:"주간 회고", content:"주간 업무 회고 및 다음 주 계획\n참석자: 전체 팀원", category:"work"},
-            {date:"2024-03-30", time_start:"1000", time_end:"1200", title:"주말 브런치", content:"가족과 함께 브런치\n장소: 카페", category:"personal"},
-            {date:"2024-03-30", time_start:"1500", time_end:"1700", title:"쇼핑", content:"생필품 쇼핑\n장소: 이마트", category:"personal"},
-            {date:"2024-03-31", time_start:"1100", time_end:"1300", title:"가족 모임", content:"월간 가족 모임\n장소: 부모님 댁", category:"personal"},
-            {date:"2024-03-31", time_start:"1600", time_end:"1800", title:"독서 시간", content:"신간 도서 읽기\n책 제목: 마케팅의 미래", category:"personal"}
+            {date:"2025-03-23", time_start:"0900", time_end:"1000", title:"아침 미팅", content:"주간 업무 계획 수립 회의\n회의실: 3층 대회의실", category:"work"},
+            {date:"2025-03-23", time_start:"1100", time_end:"1200", title:"웹사이트 디자인 검토", content:"신규 웹사이트 디자인 검토 회의\n주요 논의사항: 색상 팔레트, 레이아웃 결정", category:"work"},
+            {date:"2025-03-23", time_start:"1500", time_end:"1600", title:"헬스장", content:"개인 PT 세션\n트레이너: 김트레이너", category:"health"},
+            {date:"2025-03-23", time_start:"1700", time_end:"1800", title:"헬스장", content:"개인 PT 세션\n트레이너: 김트레이너", category:"health"},
+            {date:"2025-03-23", time_start:"1800", time_end:"1900", title:"헬스장", content:"개인 PT 세션\n트레이너: 김트레이너", category:"health"},
+            {date:"2025-03-24", time_start:"1000", time_end:"1130", title:"의사 예약", content:"정기 건강 검진\n병원: 서울 메디컬 센터", category:"health"},
+            {date:"2025-03-24", time_start:"1300", time_end:"1400", title:"점심 약속", content:"팀원들과 점심 식사\n메뉴: 이탈리안", category:"personal"},
+            {date:"2025-03-24", time_start:"1600", time_end:"1700", title:"화상 회의", content:"해외 지사와 화상 회의\n주제: 글로벌 마케팅 전략", category:"work"},
+            {date:"2025-03-25", time_start:"0930", time_end:"1030", title:"코드 리뷰", content:"신규 기능 코드 리뷰 세션\n담당자: 개발팀", category:"work"},
+            {date:"2025-03-25", time_start:"1400", time_end:"1500", title:"인터뷰", content:"신입 개발자 인터뷰\n지원자: 3명", category:"work"},
+            {date:"2025-03-25", time_start:"1800", time_end:"2000", title:"영화 관람", content:"신작 영화 관람\n영화관: CGV 용산", category:"personal"},
+            {date:"2025-03-26", time_start:"1000", time_end:"1100", title:"제품 데모", content:"신규 제품 데모 세션\n참석자: 마케팅팀, 영업팀", category:"work"},
+            {date:"2025-03-26", time_start:"1200", time_end:"1300", title:"런치 미팅", content:"신규 파트너십 논의\n장소: 회사 근처 레스토랑", category:"work"},
+            {date:"2025-03-26", time_start:"1500", time_end:"1700", title:"코딩 시간", content:"신규 기능 개발\n- 사용자 인증 기능 구현\n- 대시보드 UI 개선", category:"work"},
+            {date:"2025-03-27", time_start:"0900", time_end:"1000", title:"팀 회의", content:"주간 진행 상황 점검\n논의 사항: 일정 조정, 자원 할당", category:"work"},
+            {date:"2025-03-27", time_start:"1300", time_end:"1400", title:"멘토링 세션", content:"주니어 개발자 멘토링\n주제: 코드 최적화", category:"education"},
+            {date:"2025-03-27", time_start:"1800", time_end:"1900", title:"요가 수업", content:"주간 요가 수업\n강사: 이요가", category:"health"},
+            {date:"2025-03-28", time_start:"1100", time_end:"1200", title:"클라이언트 미팅", content:"신규 클라이언트 미팅\n미팅 장소: 클라이언트 사무실", category:"work"},
+            {date:"2025-03-28", time_start:"1400", time_end:"1600", title:"워크샵", content:"UX 디자인 워크샵\n강사: 김디자인", category:"education"},
+            {date:"2025-03-28", time_start:"1800", time_end:"2000", title:"친구 생일", content:"친구 생일 저녁 식사\n장소: 명동 레스토랑\n선물: 책", category:"personal"},
+            {date:"2025-03-29", time_start:"1000", time_end:"1100", title:"프로젝트 리뷰", content:"월간 프로젝트 리뷰\n담당자: 프로젝트 매니저", category:"work"},
+            {date:"2025-03-29", time_start:"1200", time_end:"1300", title:"팀 런치", content:"팀 빌딩 런치\n장소: 회사 근처 한식당", category:"work"},
+            {date:"2025-03-29", time_start:"1600", time_end:"1700", title:"주간 회고", content:"주간 업무 회고 및 다음 주 계획\n참석자: 전체 팀원", category:"work"},
+            {date:"2025-03-30", time_start:"1000", time_end:"1200", title:"주말 브런치", content:"가족과 함께 브런치\n장소: 카페", category:"personal"},
+            {date:"2025-03-30", time_start:"1500", time_end:"1700", title:"쇼핑", content:"생필품 쇼핑\n장소: 이마트", category:"personal"},
+            {date:"2025-03-31", time_start:"1100", time_end:"1300", title:"가족 모임", content:"월간 가족 모임\n장소: 부모님 댁", category:"personal"},
+            {date:"2025-03-31", time_start:"1600", time_end:"1800", title:"독서 시간", content:"신간 도서 읽기\n책 제목: 마케팅의 미래", category:"personal"}
         ];
         
         // 카테고리별 색상 (이벤트 시각화를 위한 색상 매핑)
@@ -599,7 +993,6 @@
         
         // localStorage에 샘플 데이터 저장
         function initializeLocalStorage() {
-            localStorage.clear(); // Add this line to clear any old data
             if (!localStorage.getItem('calendarEvents')) {
                 localStorage.setItem('calendarEvents', JSON.stringify(sampleEvents));
             }
@@ -608,9 +1001,12 @@
         // localStorage에서 이벤트 가져오기
         function getEvents() {
             const events = localStorage.getItem('calendarEvents');
-            const parsedEvents = events ? JSON.parse(events) : [];
-            console.log('Loaded events:', parsedEvents); // Add this line for debugging
-            return parsedEvents;
+            if (!events) {
+                // localStorage에 데이터가 없으면 샘플 데이터 저장
+                localStorage.setItem('calendarEvents', JSON.stringify(sampleEvents));
+                return sampleEvents;
+            }
+            return JSON.parse(events);
         }
         
         // 날짜 포매팅 함수
@@ -684,37 +1080,48 @@
             // 이전 달의 날짜들 추가
             let day = prevMonthLastDay.getDate() - startingDayOfWeek + 1;
             for (let i = 0; i < startingDayOfWeek; i++) {
-                html += `<div class="day-cell other-month" data-day="${i}">
+                const prevDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, day);
+                html += `<div class="day-cell other-month" data-day="${i}" data-date="${formatDate(prevDate)}">
                             <div class="day-number">${day}</div>
                             <div class="day-events"></div>
                         </div>`;
                 day++;
             }
             
-            
             // 현재 월의 날짜들 추가
             const today = new Date();
             for (let i = 1; i <= lastDay.getDate(); i++) {
                 const date = new Date(currentDate.getFullYear(), currentDate.getMonth(), i);
+                const dateStr = formatDate(date);
                 const dayOfWeek = date.getDay();
                 const isToday = today.getFullYear() === date.getFullYear() && 
-                                today.getMonth() === date.getMonth() && 
-                                today.getDate() === i;
+                               today.getMonth() === date.getMonth() && 
+                               today.getDate() === i;
                 
-                html += `<div class="day-cell ${isToday ? 'today' : ''}" data-day="${dayOfWeek}" data-date="${formatDate(date)}">
+                // 휴일 체크
+                const holiday = holidays.find(h => h.date === dateStr);
+                const isHoliday = holiday || dayOfWeek === 0;  // 일요일이거나 공휴일
+                
+                html += `<div class="day-cell ${isToday ? 'today' : ''} ${isHoliday ? 'holiday' : ''}" 
+                             data-day="${dayOfWeek}" 
+                             data-date="${dateStr}">
                             <div class="day-number">${i}</div>
+                            ${holiday ? `<div class="holiday-name">${holiday.name}</div>` : ''}
                             <div class="day-events"></div>
                         </div>`;
             }
             
-            // 다음 달의 날짜들 추가 (마지막 주를 채우기 위해)
+            // 다음 달의 날짜들 추가
+            let nextMonthDay = 1;
             const remainingCells = 7 - ((startingDayOfWeek + lastDay.getDate()) % 7);
             if (remainingCells < 7) {
                 for (let i = 1; i <= remainingCells; i++) {
-                    html += `<div class="day-cell other-month" data-day="${(lastDay.getDay() + i) % 7}">
-                                <div class="day-number">${i}</div>
+                    const nextDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, nextMonthDay);
+                    html += `<div class="day-cell other-month" data-day="${(lastDay.getDay() + i) % 7}" data-date="${formatDate(nextDate)}">
+                                <div class="day-number">${nextMonthDay}</div>
                                 <div class="day-events"></div>
                             </div>`;
+                    nextMonthDay++;
                 }
             }
             
@@ -756,14 +1163,20 @@
             for (let i = 0; i < 7; i++) {
                 const date = new Date(startDate);
                 date.setDate(startDate.getDate() + i);
+                const dateStr = formatDate(date);
                 
                 const isToday = today.getFullYear() === date.getFullYear() && 
                                 today.getMonth() === date.getMonth() && 
                                 today.getDate() === date.getDate();
                 
-                html += `<div class="week-day-header ${isToday ? 'today-header' : ''}" data-date="${formatDate(date)}">
+                // 휴일 체크 추가
+                const holiday = holidays.find(h => h.date === dateStr);
+                const isHoliday = holiday || date.getDay() === 0;  // 일요일이거나 공휴일
+                
+                html += `<div class="week-day-header ${isToday ? 'today-header' : ''} ${isHoliday ? 'holiday' : ''}" data-date="${dateStr}">
                             ${weekdayNames[i]}
                             <div class="week-day-number">${date.getDate()}</div>
+                            ${holiday ? `<div class="holiday-name">${holiday.name}</div>` : ''}
                         </div>`;
             }
             
@@ -775,7 +1188,12 @@
                 for (let i = 0; i < 7; i++) {
                     const date = new Date(startDate);
                     date.setDate(startDate.getDate() + i);
-                    html += `<div class="week-time-slot" data-hour="${hour}" data-date="${formatDate(date)}"></div>`;
+                    const dateStr = formatDate(date);
+                    const holiday = holidays.find(h => h.date === dateStr);
+                    const isHoliday = holiday || date.getDay() === 0;
+                    
+                    html += `<div class="week-time-slot ${isHoliday ? 'holiday' : ''}" 
+                            data-hour="${hour}" data-date="${dateStr}"></div>`;
                 }
             }
             
@@ -817,7 +1235,9 @@
         // 월별 뷰에 이벤트 추가
         function addEventsToMonthView() {
             const events = getEvents();
+            console.log('Events loaded:', events); // 디버깅용 로그
             const dayCells = document.querySelectorAll('.day-cell[data-date]');
+            console.log('Day cells found:', dayCells.length); // 디버깅용 로그
             
             // 날짜별로 이벤트 그룹화
             const eventsByDate = {};
@@ -868,6 +1288,31 @@
                             showEventModal(sortedEvents[maxVisibleEvents]);
                         });
                         
+                        dayEvents.appendChild(moreEl);
+                    }
+                    
+                    // 더 많은 이벤트가 있으면 아이콘으로 표시
+                    if (sortedEvents.length > maxVisibleEvents) {
+                        const moreEl = document.createElement('div');
+                        moreEl.className = 'event-more-icon';
+                        moreEl.innerHTML = '⋮'; // 수직 점 3개 아이콘
+                        
+                        // 툴팁 생성
+                        const tooltipEl = document.createElement('div');
+                        tooltipEl.className = 'event-tooltip';
+                        
+                        // 나머지 이벤트들을 툴팁에 추가
+                        sortedEvents.slice(maxVisibleEvents).forEach(event => {
+                            const tooltipEvent = document.createElement('div');
+                            tooltipEvent.className = 'tooltip-event';
+                            tooltipEvent.innerHTML = `
+                                <span style="color: ${getCategoryColor(event.category)}">●</span>
+                                ${formatTime(event.time_start)} ${event.title}
+                            `;
+                            tooltipEl.appendChild(tooltipEvent);
+                        });
+                        
+                        moreEl.appendChild(tooltipEl);
                         dayEvents.appendChild(moreEl);
                     }
                 }
@@ -966,13 +1411,22 @@
         // 현재 시간 표시선 추가
         function addCurrentTimeLine() {
             if (currentView === 'day' || currentView === 'week') {
+                // 기존 시간 표시선 제거
+                const existingLines = document.querySelectorAll('.current-time-line, .current-time-marker');
+                existingLines.forEach(line => line.remove());
+
                 const now = new Date();
                 const currentHour = now.getHours();
                 const currentMinute = now.getMinutes();
                 const currentPosition = currentHour + currentMinute / 60;
                 
-                // 현재 시간이 표시 범위 내에 있는 경우에만 표시
-                if (currentHour < 24) {
+                // 현재 날짜와 선택된 날짜 비교
+                const isToday = currentView === 'day' ? 
+                    formatDate(now) === formatDate(currentDate) :
+                    true; // 주간 뷰에서는 항상 오늘 날짜의 타임라인 표시
+                
+                // 오늘 날짜이고 현재 시간이 표시 범위 내인 경우에만 표시
+                if (isToday && currentHour < 24) {
                     const container = currentView === 'day' ? 
                         document.querySelector(`.time-slot[data-hour="${Math.floor(currentPosition)}"]`) :
                         document.querySelector(`.week-time-slot[data-date="${formatDate(now)}"][data-hour="${Math.floor(currentPosition)}"]`);
@@ -1001,6 +1455,17 @@
             modalCategory.textContent = getCategoryName(event.category);
             modalCategory.style.backgroundColor = getCategoryColor(event.category);
             
+            // Add edit button
+            const editBtn = document.createElement('button');
+            editBtn.className = 'btn btn-secondary';
+            editBtn.textContent = '수정';
+            editBtn.style.marginRight = '8px';
+            editBtn.onclick = () => {
+                closeEventModal();
+                showEditEventForm(event);
+            };
+            
+            modalCategory.parentElement.insertBefore(editBtn, modalCategory);
             eventModal.style.display = 'block';
         }
         
@@ -1090,25 +1555,16 @@
             }
         });
         
-        // 초기화
-        initializeLocalStorage();
-        monthViewBtn.click(); // 기본 뷰로 월별 뷰 표시
-        
-        // 1분마다 현재 시간 표시선 업데이트
-        setInterval(() => {
-            if (currentView === 'week' || currentView === 'day') {
-                addCurrentTimeLine();
-            }
-        }, 60000);
 
         
         // 초기화 및 이벤트 리스너 설정
         document.addEventListener('DOMContentLoaded', () => {
-            // localStorage 초기화
-            initializeLocalStorage();
+            // localStorage 초기화 및 데이터 로드
+            getEvents();  // initializeLocalStorage() 대신 getEvents() 호출
             
             // 기본 뷰로 월별 뷰 표시
             currentView = 'month';
+            monthViewBtn.classList.add('active');
             updateView();
             
             // 1분마다 현재 시간 표시선 업데이트
@@ -1120,10 +1576,10 @@
         });
         
         // 이벤트 리스너 설정 부분은 그대로 유지
-        monthViewBtn.addEventListener('click', () => {
-            currentView = 'month';
-            updateView();
-        });
+        // monthViewBtn.addEventListener('click', () => {
+        //     currentView = 'month';
+        //     updateView();
+        // });
         
     </script>
 </body>
