@@ -278,6 +278,7 @@ body {
     border-right: 1px solid var(--border-color);
     border-bottom: 1px solid var(--border-color);
     background: white;
+    overflow: hidden;
 }
 .day-cell.holiday {
     background-color: #e8ada82e;  /* 엷은 빨간색 배경 추가 */
@@ -324,25 +325,11 @@ body {
 
 .day-events {
     margin-top: 5px;
-}
-
-.event {
-    margin-bottom: 4px;
-    padding: 2px 4px;
-    font-size: 12px;
-    border-radius: 4px;
-    cursor: pointer;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    color: white;
-    transition: all 0.2s ease;
+    width: 100%;
 }
 
-.event:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
+
 
 .event-time {
     font-weight: 500;
@@ -426,6 +413,8 @@ body {
     height: var(--time-slot-height);
     border-bottom: 1px solid var(--border-color);
     position: relative;
+    width: 100%;
+    overflow: visible;
 }
 .week-time-slot.holiday,
 .time-slot.holiday {
@@ -450,6 +439,11 @@ body {
     border-bottom: 1px solid var(--border-color);
     position: relative;
 }
+.time-slot, .week-time-slot {
+    position: relative;
+    height: var(--time-slot-height);
+    border-bottom: 1px solid var(--border-color);
+}
 
 /* 이벤트 스타일 */
 .event {
@@ -459,13 +453,15 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    padding: 4px 6px;
+    /* padding: 4px 6px; */
+    padding: 2px 4px;
     border-radius: 4px;
     color: white;
     transition: all 0.2s ease;
     background-color: var(--primary-color);
+    max-width: 100%;
+    box-sizing: border-box;
 }
-
 .event:hover {
     transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
@@ -475,22 +471,63 @@ body {
     font-weight: 500;
     margin-right: 4px;
 }
-
 .time-event {
     position: absolute;
-    left: 0;
-    right: 0;
-    margin: 0 4px;
-    color: white;
     border-radius: 4px;
-    padding: 4px 8px;
-    font-size: 12px;
-    cursor: pointer;
-    z-index: 1;
+    padding: 2px 4px;
     overflow: hidden;
-    width: calc(100% - 8px);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    z-index: 1;
     transition: all 0.2s ease;
+    box-sizing: border-box;
+    width: calc(100% - 8px);
+    left: 4px;
+    min-height: 20px;
+}
+
+.time-event.short-event {
+    min-height: 20px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.time-event .event-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 12px;
+    color: white;
+    line-height: 1.2;
+}
+
+.time-event.overlapping-2 { 
+    width: 48%; 
+}
+.time-event.overlapping-3 { 
+    width: 32%; 
+}
+.time-event.overlapping-4 { 
+    width: 24%; 
+}
+.time-event.overlapping-5 { 
+    width: 19%; 
+}
+
+/* Update position styles */
+.time-event.position-0 { 
+    left: 0; 
+}
+.time-event.position-1 { 
+    left: 50%; 
+}
+.time-event.position-2 { 
+    left: 66%; 
+}
+.time-event.position-3 { 
+    left: 75%; 
+}
+.time-event.position-4 { 
+    left: 80%; 
 }
 
 .time-event:hover {
@@ -499,10 +536,11 @@ body {
 }
 
 .event-title {
-    font-weight: 500;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-size: 12px;
+    color: white;
 }
 
 .event-more {
@@ -664,9 +702,9 @@ body {
         width: 95%;
         padding: 16px;
     }
+}
 
-
-    .event-more-icon {
+.event-more-icon {
     text-align: center;
     color: #70757a;
     padding: 2px;
@@ -707,3 +745,57 @@ body {
     text-overflow: ellipsis;
 }
 
+
+/* Tooltip styles */
+[data-tooltip] {
+    /* position: relative; */
+    cursor: pointer;
+}
+
+[data-tooltip]:hover {
+    z-index: 10; /* Ensure the hovered event is on top */
+}
+[data-tooltip]:hover::before {
+    content: attr(title);
+    position: absolute;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 8px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: pre-line;
+    z-index: 1000;
+    width: 200px;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    margin-bottom: 5px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+[data-tooltip]:hover::after {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border-width: 5px;
+    border-style: solid;
+    border-color: rgba(0, 0, 0, 0.8) transparent transparent transparent;
+    z-index: 1000;
+}
+
+.weekday-view {
+    display: grid;
+    grid-template-columns: 50px repeat(5, 1fr); /* 시간 마커 + 월~금 */
+    grid-auto-rows: var(--time-slot-height);
+    overflow-y: auto;
+    height: calc(100vh - 120px);
+}
+
+/* 평일 뷰에서 주말 숨기기 */
+.weekday-view .week-day-header:nth-child(7),
+.weekday-view .week-day-header:nth-child(8),
+.weekday-view .week-time-slot:nth-child(7n),
+.weekday-view .week-time-slot:nth-child(7n+1) {
+    display: none;
+}
