@@ -1,4 +1,3 @@
-
 // 현재 날짜 설정
 let currentDate = new Date();
 let currentView = 'month'; // 기본 뷰는 월별
@@ -546,7 +545,10 @@ function addEventsToMonthView() {
                 `;
                 
                 // 이벤트 클릭 시 모달 표시
-                eventEl.addEventListener('click', () => showEventModal(event));
+                eventEl.addEventListener('click', (e) => {
+                    e.stopPropagation(); // day-cell 클릭 이벤트 전파 방지
+                    showEventModal(event);
+                });
                 
                 dayEvents.appendChild(eventEl);
             });
@@ -558,15 +560,26 @@ function addEventsToMonthView() {
                 moreEl.textContent = `+ ${sortedEvents.length - maxVisibleEvents}개 더보기`;
                 
                 // 더보기 클릭 시 모든 이벤트 표시
+                /*
                 moreEl.addEventListener('click', () => {
                     // 여기서는 간단히 첫 번째 이벤트의 모달을 표시
                     showEventModal(sortedEvents[maxVisibleEvents]);
+                });
+                */
+                // 더보기 클릭 시 해당 날짜의 일별 뷰로 전환
+                moreEl.addEventListener('click', (e) => {
+                    e.stopPropagation(); // 이벤트 버블링 방지
+                    const clickedDate = new Date(dateStr);
+                    currentDate = clickedDate;
+                    currentView = 'day';
+                    updateView();
                 });
                 
                 dayEvents.appendChild(moreEl);
             }
             
             // 더 많은 이벤트가 있으면 아이콘으로 표시
+            /*
             if (sortedEvents.length > maxVisibleEvents) {
                 const moreEl = document.createElement('div');
                 moreEl.className = 'event-more-icon';
@@ -590,6 +603,7 @@ function addEventsToMonthView() {
                 moreEl.appendChild(tooltipEl);
                 dayEvents.appendChild(moreEl);
             }
+            */
         }
     });
 }
