@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>캘린더 애플리케이션</title>
+    <link rel="stylesheet" href="calendar_styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="header-row">
+                <div class="date-nav">
+                    <button class="nav-btn" id="prevBtn"><i class="fas fa-chevron-left"></i></button>
+                    <div class="date-title" id="dateTitle">2024년 3월</div>
+                    <button class="nav-btn" id="nextBtn"><i class="fas fa-chevron-right"></i></button>
+                    <button class="today-btn" id="todayBtn">오늘</button>
+                </div>
+                <div class="nav-buttons">
+                    <div class="view-buttons">
+                        <button class="view-button" id="monthView">월</button>
+                        <button class="view-button" id="weekView">주</button>
+                        <button class="view-button" id="dayView">일</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="calendar" id="calendarContainer"></div>
+    </div>
+    
+    <div class="modal" id="eventModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title" id="modalTitle"></div>
+                <span class="close" id="closeModal">&times;</span>
+            </div>
+            <div class="modal-time" id="modalTime"></div>
+            <div class="modal-body" id="modalContent"></div>
+            <div class="modal-category" id="modalCategory"></div>
+        </div>
+    </div>
+
+    <script src="calendar_script.js"></script>
+</body>
+</html>
