@@ -279,6 +279,7 @@ body {
     border-bottom: 1px solid var(--border-color);
     background: white;
     overflow: hidden;
+    font-size:8px;
 }
 .day-cell.holiday {
     background-color: #e8ada82e;  /* 엷은 빨간색 배경 추가 */
@@ -304,7 +305,7 @@ body {
 
 .today .day-number {
     background-color: var(--primary-color1);
-    color: white !important;
+    color: var(--primary-color) !important;
     width: 24px;
     height: 24px;
     display: flex;
@@ -336,7 +337,7 @@ body {
     margin-right: 4px;
 }
 
-.event-title {
+.event-title-test {
     font-weight: 400;
 }
 
@@ -454,7 +455,7 @@ body {
 /* 이벤트 스타일 */
 .event {
     margin-bottom: 4px;
-    font-size: 12px;
+    font-size: 8px;
     cursor: pointer;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -473,10 +474,6 @@ body {
     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
-.event-time {
-    font-weight: 500;
-    margin-right: 4px;
-}
 .time-event {
     position: absolute;
     border-radius: 4px;
@@ -489,6 +486,8 @@ body {
     left: 4px;
     min-height: 20px;
     border:1px solid #000;
+    margin-left:1px;
+    opacity: 0.8;
 }
 
 .time-event.short-event {
@@ -538,15 +537,15 @@ body {
 }
 
 .time-event:hover {
-    transform: translateX(2px);
+    transform: translate(2px, -1px) scale(1.05);
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    opacity: 1;
 }
 
 .event-title {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    font-size: 12px;
     color: white;
 }
 
