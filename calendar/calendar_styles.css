@@ -345,6 +345,9 @@ body {
     display: grid;
     grid-template-columns: 60px repeat(7, 1fr);
     border: 1px solid var(--border-color);
+    height: calc(100vh - 140px);
+    overflow-y: auto;
+    position: relative;
 }
 
 .time-marker {
@@ -426,6 +429,9 @@ body {
     display: grid;
     grid-template-columns: 60px 1fr;
     border: 1px solid var(--border-color);
+    height: calc(100vh - 140px);
+    overflow-y: auto;
+    position: relative;
 }
 
 .day-column {
@@ -789,10 +795,11 @@ body {
 
 .weekday-view {
     display: grid;
-    grid-template-columns: 50px repeat(5, 1fr); /* 시간 마커 + 월~금 */
+    grid-template-columns: 50px repeat(5, 1fr);
     grid-auto-rows: var(--time-slot-height);
+    height: calc(100vh - 140px);
     overflow-y: auto;
-    height: calc(100vh - 120px);
+    position: relative;
 }
 
 /* 평일 뷰에서 주말 숨기기 */
@@ -844,4 +851,88 @@ body {
         height: 48px;
         font-size: 20px;
     }
+}
+
+/* 헤더 고정을 위한 스타일 추가 */
+.week-view .week-day-header,
+.day-view .week-day-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--header-bg);
+}
+
+/* 시간 마커 열 고정 */
+.week-view .time-marker,
+.day-view .time-marker {
+    position: sticky;
+    left: 0;
+    z-index: 5;
+    background: var(--header-bg);
+}
+
+/* 첫번째 헤더 셀(빈 셀) 고정 */
+.week-view .week-day-header:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 15; /* 가장 위에 표시되도록 */
+    background: var(--header-bg);
+}
+
+/* 평일 뷰 헤더 고정 */
+.weekday-view .week-day-header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background: var(--header-bg);
+}
+
+/* 평일 뷰 시간 마커 열 고정 */
+.weekday-view .time-marker {
+    position: sticky;
+    left: 0;
+    z-index: 5;
+    background: var(--header-bg);
+}
+
+/* 평일 뷰 첫번째 헤더 셀(빈 셀) 고정 */
+.weekday-view .week-day-header:first-child {
+    position: sticky;
+    left: 0;
+    z-index: 15;
+    background: var(--header-bg);
+}
+
+/* 스크롤바 스타일링 */
+.week-view,
+.weekday-view,
+.day-view {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+}
+
+.week-view::-webkit-scrollbar,
+.weekday-view::-webkit-scrollbar,
+.day-view::-webkit-scrollbar {
+    width: 8px;
+}
+
+.week-view::-webkit-scrollbar-track,
+.weekday-view::-webkit-scrollbar-track,
+.day-view::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.week-view::-webkit-scrollbar-thumb,
+.weekday-view::-webkit-scrollbar-thumb,
+.day-view::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+}
+
+/* 헤더 구분선 추가 */
+.week-view .week-day-header,
+.weekday-view .week-day-header,
+.day-view .week-day-header {
+    border-bottom: 2px solid var(--border-color);
 }

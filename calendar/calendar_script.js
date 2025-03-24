@@ -1,3 +1,4 @@
+
 // 현재 날짜 설정
 let currentDate = new Date();
 let currentView = 'month'; // 기본 뷰는 월별
