@@ -384,7 +384,7 @@ body {
 .week-day-number {
     font-size: 20px;
     font-weight: 500;
-    margin-top: 4px;
+    margin-top: -2px;
 }
 .week-day-header.holiday,
 .day-view.holiday {
@@ -537,7 +537,7 @@ body {
 }
 
 .time-event:hover {
-    transform: translate(2px, -1px) scale(1.05);
+    transform: translate(1px, -1px) scale(1.005);
     box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     opacity: 1;
 }

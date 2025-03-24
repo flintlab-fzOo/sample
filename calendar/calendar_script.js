@@ -1,4 +1,3 @@
-
 // 현재 날짜 설정
 let currentDate = new Date();
 let currentView = 'month'; // 기본 뷰는 월별
@@ -213,6 +212,8 @@ function formatTime(time) {
     if (time.length !== 4) return time;
     return `${time.substring(0, 2)}:${time.substring(2, 4)}`;
 }
+// 요일 이름 배열
+const weekdayNames = ['일', '월', '화', '수', '목', '금', '토'];
 
 // 날짜 한글 포매팅 함수
 function formatKoreanDate(dateStr) {
@@ -220,12 +221,11 @@ function formatKoreanDate(dateStr) {
     const year = date.getFullYear();
     const month = date.getMonth() + 1;
     const day = date.getDate();
-    const weekday = ['일', '월', '화', '수', '목', '금', '토'][date.getDay()];
+    const weekday = weekdayNames[date.getDay()];
     return `${year}년 ${month}월 ${day}일 (${weekday})`;
 }
 
-// 요일 이름 배열
-const weekdayNames = ['일', '월', '화', '수', '목', '금', '토'];
+
 
 // 카테고리에 따른 색상 가져오기
 function getCategoryColor(category) {
@@ -542,7 +542,7 @@ function addEventsToMonthView() {
                 eventEl.style.backgroundColor = getCategoryColor(event.category);
                 eventEl.innerHTML = `
                     <span class="event-time">${formatTime(event.time_start)}</span>
-                    <span class="event-title">${event.title}</span>
+                    <span class="event-title" title="${event.title}">${event.title}</span>
                 `;
                 
                 // 이벤트 클릭 시 모달 표시
@@ -560,13 +560,6 @@ function addEventsToMonthView() {
                 moreEl.className = 'event-more';
                 moreEl.textContent = `+ ${sortedEvents.length - maxVisibleEvents}개 더보기`;
                 
-                // 더보기 클릭 시 모든 이벤트 표시
-                /*
-                moreEl.addEventListener('click', () => {
-                    // 여기서는 간단히 첫 번째 이벤트의 모달을 표시
-                    showEventModal(sortedEvents[maxVisibleEvents]);
-                });
-                */
                 // 더보기 클릭 시 해당 날짜의 일별 뷰로 전환
                 moreEl.addEventListener('click', (e) => {
                     e.stopPropagation(); // 이벤트 버블링 방지
@@ -579,32 +572,6 @@ function addEventsToMonthView() {
                 dayEvents.appendChild(moreEl);
             }
             
-            // 더 많은 이벤트가 있으면 아이콘으로 표시
-            /*
-            if (sortedEvents.length > maxVisibleEvents) {
-                const moreEl = document.createElement('div');
-                moreEl.className = 'event-more-icon';
-                moreEl.innerHTML = '⋮'; // 수직 점 3개 아이콘
-                
-                // 툴팁 생성
-                const tooltipEl = document.createElement('div');
-                tooltipEl.className = 'event-tooltip';
-                
-                // 나머지 이벤트들을 툴팁에 추가
-                sortedEvents.slice(maxVisibleEvents).forEach(event => {
-                    const tooltipEvent = document.createElement('div');
-                    tooltipEvent.className = 'tooltip-event';
-                    tooltipEvent.innerHTML = `
-                        <span style="color: ${getCategoryColor(event.category)}">●</span>
-                        ${formatTime(event.time_start)} ${event.title}
-                    `;
-                    tooltipEl.appendChild(tooltipEvent);
-                });
-                
-                moreEl.appendChild(tooltipEl);
-                dayEvents.appendChild(moreEl);
-            }
-            */
         }
     });
 }
@@ -764,7 +731,7 @@ function addEventsToDayView() {
                 const eventWidth = 99 / totalEvents;
                 const eventLeft = index * (99 / totalEvents);
                 
-                eventEl.style.width = `${eventWidth}%`;
+                eventEl.style.width = `calc(${eventWidth}% - 1px)`;
                 eventEl.style.left = `${eventLeft}%`;
                 
                 eventEl.style.backgroundColor = getCategoryColor(event.category);
@@ -937,7 +904,38 @@ window.addEventListener('click', (event) => {
     }
 });
 
+// 키보드 단축키 이벤트 리스너 추가
+document.addEventListener('keydown', (e) => {
+    // input 요소나 textarea에서 입력 중일 때는 단축키 동작하지 않도록
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') {
+        return;
+    }
+    
+    // 모달이 열려있을 때는 단축키 동작하지 않도록
+    if (eventModal.style.display === 'block' || dateSelectorModal.style.display === 'block') {
+        return;
+    }
 
+    switch (e.key.toUpperCase()) {
+        case 'M':
+            currentView = 'month';
+            monthViewBtn.click();
+            break;
+        case 'W':
+            currentView = 'week';
+            weekViewBtn.click();
+            break;
+        case 'D':
+            currentView = 'day';
+            dayViewBtn.click();
+            break;
+    }
+});
+
+// 뷰 버튼에 단축키 힌트 추가
+monthViewBtn.setAttribute('title', '월별 보기 (M)');
+weekViewBtn.setAttribute('title', '주별 보기 (W)');
+dayViewBtn.setAttribute('title', '일별 보기 (D)');
 
 // 초기화 및 이벤트 리스너 설정
 document.addEventListener('DOMContentLoaded', () => {
