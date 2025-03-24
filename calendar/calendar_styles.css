@@ -5,6 +5,7 @@
     --hover-bg: #f1f3f4;
     --header-bg: #f8f9fa;
     --shadow: 0 2px 10px rgba(0,0,0,0.1);
+    --time-slot-height:50px;
 }
 
 * {
@@ -41,65 +42,6 @@ body {
     align-items: center;
     width: 100%;
 }
-/*
-.header-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 16px;
-}
-.app-title {
-    font-size: 24px;
-    font-weight: 600;
-    color: var(--primary-color);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-.app-title i {
-    font-size: 22px;
-}
-    */
-
-/*
-
-.title {
-    font-size: 24px;
-    font-weight: 500;
-    color: #202124;
-}
-
-.nav-buttons {
-    display: flex;
-    gap: 16px;
-}
-
-.view-buttons {
-    display: flex;
-    gap: 4px;
-}
-
-.view-button {
-    padding: 8px 16px;
-    border: 1px solid var(--border-color);
-    background: white;
-    cursor: pointer;
-    border-radius: 18px;
-    font-size: 14px;
-    font-weight: 500;
-    transition: all 0.2s ease;
-}
-
-.view-button:hover {
-    background: var(--hover-bg);
-}
-
-.view-button.active {
-    background-color: var(--primary-color);
-    color: white;
-    border-color: var(--primary-color);
-}
-*/
 .date-nav {
     display: flex;
     align-items: center;
@@ -199,6 +141,109 @@ body {
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
 }
 
+/* Date Selector Modal */
+.date-selector-modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.date-selector-content {
+    background-color: white;
+    margin: 15% auto;
+    padding: 20px;
+    border-radius: 12px;
+    width: 320px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.date-selector-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.date-selector-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: #202124;
+}
+
+.date-selector-header .close {
+    font-size: 24px;
+    cursor: pointer;
+    color: #666;
+}
+
+.year-selector {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding: 8px;
+    background-color: var(--header-bg);
+    border-radius: 8px;
+}
+
+.year-selector button {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    border-radius: 50%;
+}
+
+.year-selector button:hover {
+    background-color: var(--hover-bg);
+}
+
+#selectedYear {
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.month-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    padding: 8px;
+}
+
+.month-item {
+    padding: 12px;
+    text-align: center;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.month-item:hover {
+    background-color: var(--hover-bg);
+}
+
+.month-item.selected {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.date-title {
+    cursor: pointer;
+    padding: 8px 16px;
+    border-radius: 20px;
+    transition: all 0.2s ease;
+}
+
+.date-title:hover {
+    background-color: var(--hover-bg);
+}
 /* 월별 뷰 스타일 */
 .month-view {
     display: grid;
@@ -317,11 +362,11 @@ body {
 
 .time-marker {
     background: #f8f9fa;
-    padding: 10px 5px;
+    padding: 15px 5px;
     text-align: right;
     font-size: 12px;
     border-bottom: 1px solid var(--border-color);
-    height: 50px;
+    height: var(--time-slot-height);
     color: #70757a;
 }
 
@@ -378,7 +423,7 @@ body {
 }
 
 .week-time-slot {
-    height: 40px;
+    height: var(--time-slot-height);
     border-bottom: 1px solid var(--border-color);
     position: relative;
 }
@@ -401,7 +446,7 @@ body {
 }
 
 .time-slot {
-    height: 50px;
+    height: var(--time-slot-height);
     border-bottom: 1px solid var(--border-color);
     position: relative;
 }
@@ -661,3 +706,4 @@ body {
     overflow: hidden;
     text-overflow: ellipsis;
 }
+

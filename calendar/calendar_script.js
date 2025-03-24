@@ -22,6 +22,87 @@
             {date:"2025-03-01", name:"삼일절"},
             {date:"2025-03-22", name:"test"},
         ]
+        // Date Selector Modal functionality
+        const dateSelectorModal = document.getElementById('dateSelectorModal');
+        const closeDateSelector = document.getElementById('closeDateSelector');
+        const selectedYear = document.getElementById('selectedYear');
+        const prevYearBtn = document.getElementById('prevYear');
+        const nextYearBtn = document.getElementById('nextYear');
+        const monthGrid = document.getElementById('monthGrid');
+        
+        // Month names
+        const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
+
+        // Open date selector when clicking on date title
+        dateTitle.addEventListener('click', () => {
+            // Set the current year in the selector
+            selectedYear.textContent = currentDate.getFullYear();
+            
+            // Generate month grid
+            generateMonthGrid();
+            
+            // Show the modal
+            dateSelectorModal.style.display = 'block';
+        });
+
+        // Close date selector
+        closeDateSelector.addEventListener('click', () => {
+            dateSelectorModal.style.display = 'none';
+        });
+
+        // Close when clicking outside
+        window.addEventListener('click', (event) => {
+            if (event.target === dateSelectorModal) {
+                dateSelectorModal.style.display = 'none';
+            }
+        });
+
+        // Previous year
+        prevYearBtn.addEventListener('click', () => {
+            selectedYear.textContent = parseInt(selectedYear.textContent) - 1;
+            generateMonthGrid();
+        });
+
+        // Next year
+        nextYearBtn.addEventListener('click', () => {
+            selectedYear.textContent = parseInt(selectedYear.textContent) + 1;
+            generateMonthGrid();
+        });
+
+        // Generate month grid
+        function generateMonthGrid() {
+            monthGrid.innerHTML = '';
+            const year = parseInt(selectedYear.textContent);
+            const currentMonth = currentDate.getMonth();
+            const currentYear = currentDate.getFullYear();
+            
+            monthNames.forEach((month, index) => {
+                const monthItem = document.createElement('div');
+                monthItem.className = 'month-item';
+                
+                // Highlight current month
+                if (index === currentMonth && year === currentYear) {
+                    monthItem.classList.add('selected');
+                }
+                
+                monthItem.textContent = month;
+                
+                // Set click event
+                monthItem.addEventListener('click', () => {
+                    // Update current date
+                    currentDate.setFullYear(year);
+                    currentDate.setMonth(index);
+                    
+                    // Update view
+                    updateView();
+                    
+                    // Close modal
+                    dateSelectorModal.style.display = 'none';
+                });
+                
+                monthGrid.appendChild(monthItem);
+            });
+        }
         // 샘플 데이터 (실제로는 localStorage에서 가져옴)
         const sampleEvents = [
             // {date:"2024-03-05", time_start:"0105", time_end:"0731", title:"테스트 제목", content:"데이터 테스트", category:"work"},
@@ -255,7 +336,7 @@
             let html = '<div class="week-view">';
             
             // 시간 마커 추가
-            html += '<div class="time-marker"></div>';
+            html += '<div class="week-day-header"></div>';
             
             // 요일 헤더 추가
             const today = new Date();
