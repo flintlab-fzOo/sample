@@ -806,6 +806,94 @@ function closeEventModal() {
     eventModal.style.display = 'none';
 }
 
+// 스크롤 위치 저장 함수
+function saveScrollPosition() {
+    let scrollContainer;
+    
+    // 현재 뷰에 따라 적절한 스크롤 컨테이너 선택
+    if (currentView === 'day') {
+        scrollContainer = document.querySelector('.day-view');
+    } else if (currentView === 'week' || currentView === 'weekday') {
+        scrollContainer = document.querySelector('.week-view');
+    } else {
+        scrollContainer = calendarContainer; // 월별 뷰 또는 기본값
+    }
+    
+    if (scrollContainer) {
+        const scrollPosition = scrollContainer.scrollTop;
+        localStorage.setItem('calendarScrollPosition', scrollPosition);
+        localStorage.setItem('calendarViewMode', currentView);
+        localStorage.setItem('calendarDate', formatDate(currentDate));
+    }
+}
+
+// 스크롤 위치 복원 함수
+function restoreScrollPosition() {
+    const savedPosition = localStorage.getItem('calendarScrollPosition');
+    const savedView = localStorage.getItem('calendarViewMode');
+    const savedDate = localStorage.getItem('calendarDate');
+    
+    // 저장된 날짜와 현재 날짜, 저장된 뷰와 현재 뷰가 같을 때만 스크롤 위치 복원
+    if (savedPosition && savedView === currentView && savedDate === formatDate(currentDate)) {
+        setTimeout(() => {
+            let scrollContainer;
+            
+            // 현재 뷰에 따라 적절한 스크롤 컨테이너 선택
+            if (currentView === 'day') {
+                scrollContainer = document.querySelector('.day-view');
+            } else if (currentView === 'week' || currentView === 'weekday') {
+                scrollContainer = document.querySelector('.week-view');
+            } else {
+                scrollContainer = calendarContainer;
+            }
+            
+            if (scrollContainer) {
+                // 부드러운 스크롤 적용
+                scrollContainer.scrollTo({
+                    top: parseInt(savedPosition),
+                    behavior: 'smooth'
+                });
+            }
+        }, 100);
+    }
+}
+
+// 스크롤 이벤트 리스너 추가
+function addScrollListener() {
+    // 기존 스크롤 이벤트 리스너 제거
+    const scrollContainers = [
+        document.querySelector('.day-view'),
+        document.querySelector('.week-view'),
+        calendarContainer
+    ].filter(container => container !== null); // null 제거
+    
+    // 현재 뷰에 따라 적절한 스크롤 컨테이너 선택
+    let scrollContainer;
+    if (currentView === 'day') {
+        scrollContainer = document.querySelector('.day-view');
+    } else if (currentView === 'week' || currentView === 'weekday') {
+        scrollContainer = document.querySelector('.week-view');
+    } else {
+        scrollContainer = calendarContainer; // 월별 뷰 또는 기본값
+    }
+    
+    // 새 스크롤 이벤트 리스너 추가
+    if (scrollContainer) {
+        // 스크롤 이벤트에 디바운스 적용
+        let scrollTimeout;
+        const scrollHandler = () => {
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => {
+                saveScrollPosition();
+            }, 200); // 200ms 디바운스
+        };
+        
+        // 이전 이벤트 리스너 제거 후 새로운 리스너 추가
+        scrollContainer.removeEventListener('scroll', scrollHandler);
+        scrollContainer.addEventListener('scroll', scrollHandler);
+    }
+}
+
 // 현재 뷰 업데이트
 function updateView() {
     // 활성 버튼 스타일 업데이트
@@ -831,6 +919,12 @@ function updateView() {
             renderDayView();
             break;
     }
+    
+    // 스크롤 위치 복원
+    restoreScrollPosition();
+    
+    // 스크롤 이벤트 리스너 추가
+    addScrollListener();
 }
 
 // 이벤트 리스너 설정
@@ -945,6 +1039,15 @@ document.addEventListener('DOMContentLoaded', () => {
     // 저장된 뷰 모드 불러오기
     currentView = getSavedViewMode();
     
+    // 저장된 날짜가 있으면 복원
+    const savedDate = localStorage.getItem('calendarDate');
+    if (savedDate) {
+        const dateParts = savedDate.split('-');
+        if (dateParts.length === 3) {
+            currentDate = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+        }
+    }
+
     // 기본 뷰 표시
     updateView();
     

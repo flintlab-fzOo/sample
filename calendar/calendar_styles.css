@@ -870,6 +870,13 @@ body {
     background: var(--header-bg);
 }
 
+/* 스크롤 애니메이션 스타일 */
+.day-view,
+.week-view,
+.weekday-view {
+    scroll-behavior: smooth;
+}
+
 /* 첫번째 헤더 셀(빈 셀) 고정 */
 .week-view .week-day-header:first-child {
     position: sticky;
