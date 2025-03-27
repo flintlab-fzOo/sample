@@ -31,6 +31,24 @@ const selectedYear = document.getElementById('selectedYear');
 const prevYearBtn = document.getElementById('prevYear');
 const nextYearBtn = document.getElementById('nextYear');
 const monthGrid = document.getElementById('monthGrid');
+const headerFoldBtn = document.getElementById('headerFoldBtn');
+const headerUnfoldBtn = document.getElementById('headerUnfoldBtn');
+const header = document.querySelector('.header');
+
+// Add fold/unfold functionality
+headerFoldBtn.addEventListener('click', () => {
+    header.classList.add('folded');
+    headerUnfoldBtn.classList.add('visible');
+    // Save state to localStorage
+    localStorage.setItem('headerFolded', 'true');
+});
+
+headerUnfoldBtn.addEventListener('click', () => {
+    header.classList.remove('folded');
+    headerUnfoldBtn.classList.remove('visible');
+    // Save state to localStorage
+    localStorage.setItem('headerFolded', 'false');
+});
 
 // Month names
 const monthNames = ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'];
@@ -1085,6 +1103,12 @@ document.addEventListener('DOMContentLoaded', () => {
         if (darkModeBtn) {
             darkModeBtn.innerHTML = '<i class="fas fa-sun"></i>';
         }
+    }
+    // Restore header fold state
+    const headerFolded = localStorage.getItem('headerFolded') === 'true';
+    if (headerFolded) {
+        header.classList.add('folded');
+        headerUnfoldBtn.classList.add('visible');
     }
 
     // 기본 뷰 표시
