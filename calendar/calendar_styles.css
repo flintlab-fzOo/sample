@@ -942,3 +942,97 @@ body {
 .day-view .week-day-header {
     border-bottom: 2px solid var(--border-color);
 }
+
+/* Dark mode styles */
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+/* Header styles for dark mode */
+body.dark-mode .header {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+}
+
+/* Button styles for dark mode */
+body.dark-mode .view-button,
+body.dark-mode .nav-btn,
+body.dark-mode .today-btn {
+    background-color: #333;
+    color: #e0e0e0;
+    border: 1px solid #555;
+}
+
+body.dark-mode .view-button.active {
+    background-color: #555;
+    color: #fff;
+}
+
+body.dark-mode .view-button:hover,
+body.dark-mode .nav-btn:hover,
+body.dark-mode .today-btn:hover {
+    background-color: #444;
+}
+
+/* Calendar styles for dark mode */
+body.dark-mode .day-cell {
+    background-color: #1e1e1e;
+    border-color: #333;
+}
+
+body.dark-mode .day-cell.other-month {
+    background-color: #181818;
+}
+
+body.dark-mode .day-cell.today {
+    background-color: #2d3748;
+}
+
+body.dark-mode .day-header {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    border-color: #333;
+}
+
+body.dark-mode .time-marker,
+body.dark-mode .week-day-header {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    border-color: #333;
+}
+
+body.dark-mode .time-slot,
+body.dark-mode .week-time-slot {
+    background-color: #1e1e1e;
+    border-color: #333;
+}
+
+/* Modal styles for dark mode */
+body.dark-mode .modal-content,
+body.dark-mode .date-selector-content {
+    background-color: #1e1e1e;
+    color: #e0e0e0;
+    border-color: #333;
+}
+
+body.dark-mode .close {
+    color: #e0e0e0;
+}
+
+body.dark-mode .close:hover {
+    color: #fff;
+}
+
+/* Holiday and event styles for dark mode */
+body.dark-mode .holiday {
+    background-color: rgba(255, 0, 0, 0.1);
+}
+
+body.dark-mode .current-time-line {
+    background-color: #ff5252;
+}
+
+body.dark-mode .current-time-marker {
+    background-color: #ff5252;
+}

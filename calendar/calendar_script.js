@@ -1,12 +1,14 @@
 // 현재 날짜 설정
 let currentDate = new Date();
 let currentView = 'month'; // 기본 뷰는 월별
+let isDarkMode = false; // 다크 모드 상태 저장 변수
 
 // DOM 요소
 const monthViewBtn = document.getElementById('monthView');
 const weekViewBtn = document.getElementById('weekView');
 const weekdayViewBtn = document.getElementById('weekdayView');
 const dayViewBtn = document.getElementById('dayView');
+const darkModeBtn = document.getElementById('darkModeBtn'); 
 const prevBtn = document.getElementById('prevBtn');
 const nextBtn = document.getElementById('nextBtn');
 const todayBtn = document.getElementById('todayBtn');
@@ -1039,6 +1041,24 @@ monthViewBtn.setAttribute('title', '월별 보기 (M)');
 weekViewBtn.setAttribute('title', '주별 보기 (W)');
 dayViewBtn.setAttribute('title', '일별 보기 (D)');
 
+// 다크 모드 토글 함수
+function toggleDarkMode() {
+    isDarkMode = !isDarkMode;
+    document.body.classList.toggle('dark-mode', isDarkMode);
+    
+    // 다크 모드 상태 저장
+    localStorage.setItem('calendarDarkMode', isDarkMode ? 'true' : 'false');
+    
+    // 버튼 아이콘 변경
+    darkModeBtn.innerHTML = isDarkMode ? 
+        '<i class="fas fa-sun"></i>' : 
+        '<i class="fas fa-moon"></i>';
+}
+
+// 다크 모드 버튼 이벤트 리스너
+if (darkModeBtn) {
+    darkModeBtn.addEventListener('click', toggleDarkMode);
+}
 // 초기화 및 이벤트 리스너 설정
 document.addEventListener('DOMContentLoaded', () => {
     // localStorage 초기화 및 데이터 로드
@@ -1053,6 +1073,17 @@ document.addEventListener('DOMContentLoaded', () => {
         const dateParts = savedDate.split('-');
         if (dateParts.length === 3) {
             currentDate = new Date(dateParts[0], dateParts[1] - 1, dateParts[2]);
+        }
+    }
+
+    
+    // 저장된 다크 모드 설정 불러오기
+    const savedDarkMode = localStorage.getItem('calendarDarkMode');
+    if (savedDarkMode === 'true') {
+        isDarkMode = true;
+        document.body.classList.add('dark-mode');
+        if (darkModeBtn) {
+            darkModeBtn.innerHTML = '<i class="fas fa-sun"></i>';
         }
     }
 
