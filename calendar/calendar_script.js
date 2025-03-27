@@ -755,7 +755,6 @@ function addEventsToDayView() {
         });
     });
 }
-
 // 현재 시간 표시선 추가
 function addCurrentTimeLine() {
     if (currentView === 'day' || currentView === 'week' || currentView === 'weekday') {
@@ -764,15 +763,24 @@ function addCurrentTimeLine() {
         existingLines.forEach(line => line.remove());
 
         const now = new Date();
+        const today = formatDate(now);
         const currentHour = now.getHours();
         const currentMinute = now.getMinutes();
         const currentPosition = currentHour + currentMinute / 60;
         
-        // 현재 시간이 표시 범위 내에 있는 경우에만 표시
+        // 현재 시간이 표시 범위 내에 있고, 오늘 날짜가 표시되는 경우에만 표시
         if (currentHour < 24) {
-            const container = currentView === 'day' ? 
-                document.querySelector(`.time-slot[data-hour="${Math.floor(currentPosition)}"]`) :
-                document.querySelector(`.week-time-slot[data-date="${formatDate(now)}"][data-hour="${Math.floor(currentPosition)}"]`);
+            let container = null;
+            
+            if (currentView === 'day') {
+                // 일별 뷰에서는 현재 표시된 날짜가 오늘인 경우에만 표시
+                if (formatDate(currentDate) === today) {
+                    container = document.querySelector(`.time-slot[data-hour="${Math.floor(currentPosition)}"]`);
+                }
+            } else {
+                // 주간/평일 뷰에서는 오늘 날짜의 시간 슬롯에만 표시
+                container = document.querySelector(`.week-time-slot[data-date="${today}"][data-hour="${Math.floor(currentPosition)}"]`);
+            }
             
             if (container) {
                 const line = document.createElement('div');
