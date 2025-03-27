@@ -1042,8 +1042,8 @@ body.dark-mode .current-time-marker {
 /* Add header fold button styles */
 .header-fold-btn {
     position: absolute;
-    right: 10px;
-    top: 50%;
+    right: -1px;
+    top: 89%;
     transform: translateY(-50%);
     background: transparent;
     border: none;
