@@ -35,6 +35,30 @@ const headerFoldBtn = document.getElementById('headerFoldBtn');
 const headerUnfoldBtn = document.getElementById('headerUnfoldBtn');
 const header = document.querySelector('.header');
 
+// Add these functions at the top of the file
+function updateUrlDate(date) {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const newUrl = `/calendar/${year}${month}${day}`;
+    history.pushState({}, '', newUrl);
+}
+
+function getDateFromUrl() {
+    const path = window.location.pathname;
+    const match = path.match(/\/calendar\/(\d{8})/);
+    
+    if (match) {
+        const dateStr = match[1];
+        const year = parseInt(dateStr.substring(0, 4));
+        const month = parseInt(dateStr.substring(4, 6)) - 1;
+        const day = parseInt(dateStr.substring(6, 8));
+        return new Date(year, month, day);
+    }
+    
+    return new Date(); // Return current date if URL is invalid
+}
+
 // Add fold/unfold functionality
 headerFoldBtn.addEventListener('click', () => {
     header.classList.add('folded');
@@ -924,35 +948,49 @@ function addScrollListener() {
 
 // 현재 뷰 업데이트
 function updateView() {
-    // 활성 버튼 스타일 업데이트
-    monthViewBtn.classList.toggle('active', currentView === 'month');
-    weekViewBtn.classList.toggle('active', currentView === 'week');
-    weekdayViewBtn.classList.toggle('active', currentView === 'weekday');
-    dayViewBtn.classList.toggle('active', currentView === 'day');
-    // 현재 뷰 모드 저장
-    saveViewMode(currentView);
+    // Remove compact class when changing views
+    document.querySelector('.header').classList.remove('compact');
     
-    // 선택된 뷰 렌더링
-    switch (currentView) {
+    // Update active view button
+    document.querySelectorAll('.view-button').forEach(btn => {
+        btn.classList.remove('active');
+    });
+    
+    // Set first day of month for month view
+    if (currentView === 'month') {
+        currentDate.setDate(1);
+    }
+    
+    // Set first day of week for week view
+    if (currentView === 'week') {
+        const dayOfWeek = currentDate.getDay();
+        currentDate.setDate(currentDate.getDate() - dayOfWeek);
+    }
+    
+    // Update URL with the current date
+    updateUrlDate(currentDate);
+    
+    // Update view buttons and render appropriate view
+    switch(currentView) {
         case 'month':
+            monthViewBtn.classList.add('active');
             renderMonthView();
             break;
         case 'week':
+            weekViewBtn.classList.add('active');
             renderWeekView();
             break;
         case 'weekday':
+            weekdayViewBtn.classList.add('active');
             renderWeekdayView();
             break;
         case 'day':
+            dayViewBtn.classList.add('active');
             renderDayView();
             break;
     }
     
-    // 스크롤 위치 복원
-    restoreScrollPosition();
-    
-    // 스크롤 이벤트 리스너 추가
-    addScrollListener();
+    saveViewMode(currentView);
 }
 
 // 이벤트 리스너 설정
@@ -982,10 +1020,8 @@ prevBtn.addEventListener('click', () => {
             currentDate.setMonth(currentDate.getMonth() - 1);
             break;
         case 'week':
-            currentDate.setDate(currentDate.getDate() - 7);
-            break;
         case 'weekday':
-            currentDate.setDate(currentDate.getDate() - 5);
+            currentDate.setDate(currentDate.getDate() - 7);
             break;
         case 'day':
             currentDate.setDate(currentDate.getDate() - 1);
@@ -1000,10 +1036,8 @@ nextBtn.addEventListener('click', () => {
             currentDate.setMonth(currentDate.getMonth() + 1);
             break;
         case 'week':
-            currentDate.setDate(currentDate.getDate() + 7);
-            break;
         case 'weekday':
-            currentDate.setDate(currentDate.getDate() + 5);
+            currentDate.setDate(currentDate.getDate() + 7);
             break;
         case 'day':
             currentDate.setDate(currentDate.getDate() + 1);
@@ -1080,11 +1114,13 @@ if (darkModeBtn) {
 // 초기화 및 이벤트 리스너 설정
 document.addEventListener('DOMContentLoaded', () => {
     // localStorage 초기화 및 데이터 로드
-    getEvents();  // initializeLocalStorage() 대신 getEvents() 호출
+    //getEvents();  // initializeLocalStorage() 대신 getEvents() 호출
+    const urlDate = getDateFromUrl();
+    currentDate = urlDate;
     
     // 저장된 뷰 모드 불러오기
     currentView = getSavedViewMode();
-    
+    /*
     // 저장된 날짜가 있으면 복원
     const savedDate = localStorage.getItem('calendarDate');
     if (savedDate) {
@@ -1110,14 +1146,22 @@ document.addEventListener('DOMContentLoaded', () => {
         header.classList.add('folded');
         headerUnfoldBtn.classList.add('visible');
     }
+        */
 
     // 기본 뷰 표시
     updateView();
-    
+    /*
     // 1분마다 현재 시간 표시선 업데이트
     setInterval(() => {
         if (currentView === 'week' || currentView === 'day') {
             addCurrentTimeLine();
         }
     }, 60000);
+    */
+});
+
+
+window.addEventListener('popstate', () => {
+    currentDate = getDateFromUrl();
+    updateView();
 });
