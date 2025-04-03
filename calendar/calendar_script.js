@@ -35,6 +35,77 @@ const headerFoldBtn = document.getElementById('headerFoldBtn');
 const headerUnfoldBtn = document.getElementById('headerUnfoldBtn');
 const header = document.querySelector('.header');
 
+// const refreshBtn = document.getElementById('refreshBtn');
+// if (refreshBtn) {
+//     refreshBtn.addEventListener('click', () => {
+//         // Add spinning animation to the icon
+//         const icon = refreshBtn.querySelector('i');
+//         icon.classList.add('fa-spin');
+        
+//         // Reload the current page
+//         window.location.reload();
+//     });
+// }
+const refreshBtn = document.getElementById('refreshBtn');
+const autoRefreshBtn = document.getElementById('autoRefreshBtn');
+let autoRefreshInterval = null;
+let isAutoRefreshEnabled = localStorage.getItem('autoRefreshEnabled') === 'true';
+
+// Update auto refresh button state
+function updateAutoRefreshButton() {
+    const icon = autoRefreshBtn.querySelector('i');
+    if (isAutoRefreshEnabled) {
+        icon.className = 'fas fa-toggle-on';
+        autoRefreshBtn.title = '자동 새로고침 켜짐';
+    } else {
+        icon.className = 'fas fa-toggle-off';
+        autoRefreshBtn.title = '자동 새로고침 꺼짐';
+    }
+}
+
+// Initialize auto refresh state
+updateAutoRefreshButton();
+if (isAutoRefreshEnabled) {
+    autoRefreshInterval = setInterval(() => {
+        const icon = refreshBtn.querySelector('i');
+        icon.classList.add('fa-spin');
+        window.location.reload();
+    }, 60000); // Refresh every 60 seconds
+}
+
+// Add refresh button functionality
+if (refreshBtn) {
+    refreshBtn.addEventListener('click', () => {
+        const icon = refreshBtn.querySelector('i');
+        icon.classList.add('fa-spin');
+        window.location.reload();
+    });
+}
+
+// Add auto refresh toggle functionality
+if (autoRefreshBtn) {
+    autoRefreshBtn.addEventListener('click', () => {
+        isAutoRefreshEnabled = !isAutoRefreshEnabled;
+        localStorage.setItem('autoRefreshEnabled', isAutoRefreshEnabled);
+        
+        if (isAutoRefreshEnabled) {
+            autoRefreshInterval = setInterval(() => {
+                const icon = refreshBtn.querySelector('i');
+                icon.classList.add('fa-spin');
+                window.location.reload();
+            }, 60000); // Refresh every 60 seconds
+        } else {
+            if (autoRefreshInterval) {
+                clearInterval(autoRefreshInterval);
+                autoRefreshInterval = null;
+            }
+        }
+        
+        updateAutoRefreshButton();
+    });
+}
+
+
 // Add these functions at the top of the file
 function updateUrlDate(date) {
     const year = date.getFullYear();
@@ -1150,14 +1221,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // 기본 뷰 표시
     updateView();
-    /*
+    
     // 1분마다 현재 시간 표시선 업데이트
     setInterval(() => {
         if (currentView === 'week' || currentView === 'day') {
-            addCurrentTimeLine();
+            if (!isAutoRefreshEnabled) {
+                addCurrentTimeLine();
+            }
         }
     }, 60000);
-    */
 });
 
 
