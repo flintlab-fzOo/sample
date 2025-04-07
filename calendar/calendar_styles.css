@@ -670,7 +670,8 @@ body {
 }
 
 /* 반응형 스타일 */
-@media (max-width: 768px) {
+@media (max-width: 855px) {
+
     .container {
         padding: 8px;
     }
@@ -1098,4 +1099,144 @@ body.dark-mode .current-time-marker {
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+
+
+
+/* Premium Digital Clock Styles */
+.digital-clock-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    margin: 0 15px;
+}
+
+.digital-clock {
+    font-family: 'Orbitron', 'Roboto Mono', monospace;
+    font-size: 1.8rem;
+    font-weight: 700;
+    padding: 10px 20px;
+    border-radius: 12px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3),
+                inset 0 2px 3px rgba(255, 255, 255, 0.1),
+                inset 0 -2px 3px rgba(0, 0, 0, 0.2);
+    letter-spacing: 2px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(145deg, #222, #333);
+    border: 1px solid rgba(0, 198, 255, 0.5);
+}
+
+.clock-digit {
+    display: inline-block;
+    background: linear-gradient(to bottom, #00c6ff, #0072ff);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    text-shadow: 0 0 10px rgba(0, 198, 255, 0.7);
+    font-weight: 800;
+    padding: 0 2px;
+    position: relative;
+}
+
+.clock-separator {
+    display: inline-block;
+    color: rgba(0, 198, 255, 0.8);
+    font-weight: 400;
+    animation: blink 1s infinite;
+    position: relative;
+    top: -2px;
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+}
+
+.digital-clock::before {
+    content: '';
+    position: absolute;
+    top: -10px;
+    left: -10px;
+    right: -10px;
+    bottom: -10px;
+    background: linear-gradient(135deg, 
+                rgba(0, 198, 255, 0.3) 0%, 
+                rgba(0, 198, 255, 0) 50%, 
+                rgba(0, 198, 255, 0.3) 100%);
+    transform: translateX(-100%) rotate(45deg);
+    animation: shine 8s infinite;
+}
+
+.digital-clock::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, 
+                transparent, 
+                rgba(0, 198, 255, 0.8), 
+                transparent);
+}
+
+@keyframes shine {
+    0% { transform: translateX(-100%) rotate(45deg); }
+    20% { transform: translateX(100%) rotate(45deg); }
+    100% { transform: translateX(100%) rotate(45deg); }
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 0 rgba(0, 198, 255, 0); }
+    50% { transform: scale(1.003); box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4), 0 0 20px rgba(0, 198, 255, 0.6); }
+    100% { transform: scale(1); box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 0 rgba(0, 198, 255, 0); }
+}
+
+.digital-clock.pulse {
+    animation: pulse 0.3s ease-in-out;
+}
+
+/* Light mode override */
+body:not(.dark-mode) .digital-clock {
+    background: linear-gradient(145deg, #e6e6e6, #ffffff);
+    border: 2px solid rgba(26, 115, 232, 0.5);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1),
+                inset 0 2px 3px rgba(255, 255, 255, 0.8),
+                inset 0 -2px 3px rgba(0, 0, 0, 0.1);
+}
+
+body:not(.dark-mode) .clock-digit {
+    background: linear-gradient(to bottom, #1a73e8, #0052cc);
+    -webkit-background-clip: text;
+    background-clip: text;
+    text-shadow: 0 0 10px rgba(26, 115, 232, 0.5);
+}
+
+body:not(.dark-mode) .clock-separator {
+    color: rgba(26, 115, 232, 0.8);
+}
+
+body:not(.dark-mode) .digital-clock::before {
+    background: linear-gradient(135deg, 
+                rgba(26, 115, 232, 0.3) 0%, 
+                rgba(26, 115, 232, 0) 50%, 
+                rgba(26, 115, 232, 0.3) 100%);
+}
+
+body:not(.dark-mode) .digital-clock::after {
+    background: linear-gradient(90deg, 
+                transparent, 
+                rgba(26, 115, 232, 0.8), 
+                transparent);
+}
+
+/* Hide on mobile */
+@media (max-width: 1200px) {
+    .digital-clock-container {
+        display: none;
+    }
 }

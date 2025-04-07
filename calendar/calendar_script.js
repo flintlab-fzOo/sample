@@ -1182,8 +1182,50 @@ function toggleDarkMode() {
 if (darkModeBtn) {
     darkModeBtn.addEventListener('click', toggleDarkMode);
 }
+
+function updateDigitalClock() {
+    const clockElement = document.getElementById('digitalClock');
+    if (!clockElement) return;
+    
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    
+    // Create HTML with individual digit spans for better styling
+    const timeHTML = `
+        <span class="clock-digit">${hours[0]}</span>
+        <span class="clock-digit">${hours[1]}</span>
+        <span class="clock-separator">:</span>
+        <span class="clock-digit">${minutes[0]}</span>
+        <span class="clock-digit">${minutes[1]}</span>
+        <span class="clock-separator">:</span>
+        <span class="clock-digit">${seconds[0]}</span>
+        <span class="clock-digit">${seconds[1]}</span>
+    `;
+    
+    // Only update if the time has changed
+    const timeString = `${hours}:${minutes}:${seconds}`;
+    if (clockElement.getAttribute('data-time') !== timeString) {
+        clockElement.setAttribute('data-time', timeString);
+        
+        // Add pulse effect when seconds change
+        clockElement.classList.add('pulse');
+        setTimeout(() => {
+            clockElement.classList.remove('pulse');
+        }, 500);
+        
+        // Update the clock display
+        clockElement.innerHTML = timeHTML;
+    }
+}
+
 // 초기화 및 이벤트 리스너 설정
 document.addEventListener('DOMContentLoaded', () => {
+    // Start the digital clock
+    updateDigitalClock();
+    setInterval(updateDigitalClock, 1000);
+
     // localStorage 초기화 및 데이터 로드
     //getEvents();  // initializeLocalStorage() 대신 getEvents() 호출
     const urlDate = getDateFromUrl();
