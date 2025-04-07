@@ -10,6 +10,26 @@
 </head>
 <body>
     <div class="container">
+        <button class="mobile-clock-btn" id="mobileClockBtn">
+            <i class="fas fa-clock"></i>
+        </button>
+        <div class="fullscreen-clock-mode" id="fullscreenClockMode">
+            <div class="clock-mode-header">
+                <div class="orientation-controls">
+                    <button class="orientation-btn" id="portraitBtn" title="세로 모드">
+                        <i class="fas fa-mobile-alt"></i>
+                    </button>
+                    <button class="orientation-btn" id="landscapeBtn" title="가로 모드">
+                        <i class="fas fa-mobile-alt fa-rotate-90"></i>
+                    </button>
+                </div>
+                <button class="close-clock-btn" id="closeClockBtn">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="fullscreen-digital-clock" id="fullscreenDigitalClock">00:00:00</div>
+        </div>
+
         <div class="header">
             <div class="header-row">
                 <div class="date-nav">
@@ -47,7 +67,7 @@
         <div class="calendar" id="calendarContainer"></div>
         
         <!-- Add FAB button -->
-        <button class="fab-button" id="addEventButton">
+        <button class="fab-button add-event" id="addEventButton">
             <i class="fas fa-plus"></i>
         </button>
     </div>

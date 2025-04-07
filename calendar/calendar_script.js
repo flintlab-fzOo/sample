@@ -105,6 +105,61 @@ if (autoRefreshBtn) {
     });
 }
 
+// Add this function to update both clocks
+function updateAllClocks() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    const seconds = String(now.getSeconds()).padStart(2, '0');
+    
+    // Update regular clock
+    const clockElement = document.getElementById('digitalClock');
+    if (clockElement) {
+        // Your existing clock update code...
+    }
+    
+    // Update fullscreen clock
+    if (fullscreenDigitalClock) {
+        fullscreenDigitalClock.textContent = `${hours}:${minutes}:${seconds}`;
+    }
+}
+
+const mobileClockBtn = document.getElementById('mobileClockBtn');
+const fullscreenClockMode = document.getElementById('fullscreenClockMode');
+const closeClockBtn = document.getElementById('closeClockBtn');
+const portraitBtn = document.getElementById('portraitBtn');
+const landscapeBtn = document.getElementById('landscapeBtn');
+const fullscreenDigitalClock = document.getElementById('fullscreenDigitalClock');
+let preDarkMode = false;
+
+mobileClockBtn.addEventListener('click', () => {
+    fullscreenClockMode.style.display = 'flex';
+    portraitBtn.classList.add('active');
+    landscapeBtn.classList.remove('active');
+    fullscreenClockMode.classList.remove('landscape');
+    setDarkMode(true,false);
+});
+
+closeClockBtn.addEventListener('click', () => {
+    fullscreenClockMode.style.display = 'none';
+    setDarkMode(localStorage.getItem('calendarDarkMode') == "true",false);
+});
+
+portraitBtn.addEventListener('click', () => {
+    portraitBtn.classList.add('active');
+    landscapeBtn.classList.remove('active');
+    fullscreenClockMode.classList.remove('landscape');
+});
+
+landscapeBtn.addEventListener('click', () => {
+    landscapeBtn.classList.add('active');
+    portraitBtn.classList.remove('active');
+    fullscreenClockMode.classList.add('landscape');
+});
+
+// Update the clock interval to use the new function
+setInterval(updateAllClocks, 1000);
+
 
 // Add these functions at the top of the file
 function updateUrlDate(date) {
@@ -1164,18 +1219,23 @@ monthViewBtn.setAttribute('title', '월별 보기 (M)');
 weekViewBtn.setAttribute('title', '주별 보기 (W)');
 dayViewBtn.setAttribute('title', '일별 보기 (D)');
 
-// 다크 모드 토글 함수
-function toggleDarkMode() {
-    isDarkMode = !isDarkMode;
+
+function setDarkMode(isDarkMode=true,localStorageSave=true) {
     document.body.classList.toggle('dark-mode', isDarkMode);
     
     // 다크 모드 상태 저장
-    localStorage.setItem('calendarDarkMode', isDarkMode ? 'true' : 'false');
+    if (localStorageSave)
+        localStorage.setItem('calendarDarkMode', isDarkMode ? 'true' : 'false');
     
     // 버튼 아이콘 변경
-    darkModeBtn.innerHTML = isDarkMode ? 
-        '<i class="fas fa-sun"></i>' : 
+    darkModeBtn.innerHTML = isDarkMode?
+        '<i class="fas fa-sun"></i>' :
         '<i class="fas fa-moon"></i>';
+}
+// 다크 모드 토글 함수
+function toggleDarkMode() {
+    isDarkMode = !isDarkMode;
+    setDarkMode(isDarkMode);
 }
 
 // 다크 모드 버튼 이벤트 리스너

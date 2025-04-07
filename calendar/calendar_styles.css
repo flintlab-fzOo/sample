@@ -709,6 +709,20 @@ body {
         width: 95%;
         padding: 16px;
     }
+    .fab-button {
+        bottom: 24px;
+        right: 24px;
+        width: 48px;
+        height: 48px;
+        font-size: 20px;
+    }
+    .digital-clock-container {
+        display: none;
+    }
+    
+    .mobile-clock-btn {
+        display: block;
+    }
 }
 
 .event-more-icon {
@@ -842,16 +856,6 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
-/* 반응형 스타일에 추가 */
-@media (max-width: 768px) {
-    .fab-button {
-        bottom: 24px;
-        right: 24px;
-        width: 48px;
-        height: 48px;
-        font-size: 20px;
-    }
-}
 
 /* 헤더 고정을 위한 스타일 추가 */
 .week-view .week-day-header,
@@ -1239,4 +1243,126 @@ body:not(.dark-mode) .digital-clock::after {
     .digital-clock-container {
         display: none;
     }
+}
+
+
+
+
+
+
+/* Dark mode adjustments */
+body:not(.dark-mode) .fullscreen-clock-mode {
+    background: linear-gradient(145deg, #f0f0f0, #ffffff);
+}
+
+body:not(.dark-mode) .orientation-btn,
+body:not(.dark-mode) .close-clock-btn {
+    background: rgba(0, 0, 0, 0.1);
+    color: #333;
+}
+
+body:not(.dark-mode) .orientation-btn.active {
+    background: rgba(26, 115, 232, 0.3);
+    color: #1a73e8;
+}
+
+
+
+/* Mobile clock button */
+.mobile-clock-btn {
+    /* display: none; */
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 50px;
+    height: 50px;
+    border-radius: 25px;
+    background: linear-gradient(145deg, #00c6ff, #0072ff);
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 15px rgba(0, 198, 255, 0.3);
+    z-index: 1000;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.mobile-clock-btn:hover {
+    transform: scale(1.1);
+}
+/* Fullscreen clock mode */
+.fullscreen-clock-mode {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(145deg, #1a1a1a, #2c2c2c);
+    z-index: 2000;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.clock-mode-header {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+.orientation-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.orientation-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.orientation-btn.active {
+    background: rgba(0, 198, 255, 0.3);
+    color: #00c6ff;
+}
+
+.close-clock-btn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.close-clock-btn:hover {
+    background: rgba(255, 0, 0, 0.3);
+    color: #ff4444;
+}
+
+.fullscreen-digital-clock {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 5rem;
+    font-weight: 700;
+    color: #00c6ff;
+    text-shadow: 0 0 20px rgba(0, 198, 255, 0.5);
+    transition: all 0.3s ease;
+}
+
+.fullscreen-clock-mode.landscape .fullscreen-digital-clock {
+    font-size: 8rem;
+}
+
+.add-event {
+    display: none;
 }
