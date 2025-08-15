@@ -1,0 +1,180 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>고점+눌림 모두 정확히 예측하는 피보나치 활용법</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+<style>
+    .single-summary-card-container {
+        font-family: 'Noto Sans KR', sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 20px 10px;
+        background-color: #e0f7fa; /* Light Teal for container background */
+        margin: 20px 0;
+    }
+    .single-summary-card {
+        width: 100%;
+        max-width: 700px;
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+        padding: 25px;
+        display: flex;
+        flex-direction: column;
+        overflow: hidden;
+        border: 1px solid #b2ebf2; /* Teal border for card */
+        box-sizing: border-box; 
+        height: auto;
+    }
+    .single-summary-card .card-header {
+        display: flex;
+        align-items: center;
+        border-bottom: 2px solid #00796b;
+        padding-bottom: 12px;
+        margin-bottom: 12px;
+    }
+    .single-summary-card .card-header-icon {
+        font-size: 34px;
+        color: #00796b;
+        margin-right: 14px;
+    }
+    .single-summary-card .card-header h3 {
+        font-size: 26px;
+        color: #00796b;
+        margin: 0;
+        line-height: 1.3;
+        font-weight: 700;
+    }
+    .single-summary-card .card-content {
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-around;
+        font-size: 17px;
+        line-height: 1.65;
+        color: #333;
+    }
+    .single-summary-card .card-content .section {
+        margin-bottom: 10px;
+    }
+    .single-summary-card .card-content strong {
+        color: #004d40;
+        font-weight: 600;
+    }
+    .single-summary-card .card-content .highlight {
+        background-color: #fff9c4;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-weight: bold;
+    }
+    .single-summary-card .card-footer {
+        font-size: 14px;
+        color: #777;
+        text-align: center;
+        padding-top: 12px;
+        border-top: 1px dashed #b2ebf2;
+        margin-top: auto;
+    }
+    @media (max-width: 768px) {
+        .single-summary-card { padding: 18px; }
+        .single-summary-card .card-header-icon { font-size: 28px; margin-right: 10px; }
+        .single-summary-card .card-header h3 { font-size: 20px; }
+        .single-summary-card .card-content { font-size: 15px; line-height: 1.5; }
+    }
+</style>
+</head>
+<body>
+<div style="color: #333; line-height: 1.7; max-width: 800px; margin: 0 auto; font-size: 16px; font-family: 'Noto Sans KR', sans-serif; box-sizing: border-box;">
+    
+    <h1 style="font-size: 28px; color: #004d40; text-align: center; margin-bottom: 20px;">고점+눌림 모두 정확히 예측하는 피보나치 활용법</h1>
+
+    <div style="background-color: #e0f7fa; padding: 15px; border-radius: 8px; font-style: italic; margin-bottom: 25px; font-size: 15px; border: 1px solid #b2ebf2;">
+    비트코인이 역사적 신고가를 경신하는 상황에서, 더 이상 과거의 매물대가 없는 미지의 영역으로 진입했습니다. 이런 불확실성 속에서 어떻게 다음 목표가와 건강한 조정 구간을 예측할 수 있을까요? 이 분석은 피보나치 도구를 활용하여 고점과 눌림목을 모두 예측하는 실전 전략을 제시합니다. 단순한 선 긋기를 넘어, '이것'과 결합하여 승률을 극대화하는 비법을 확인해보세요!
+    </div>
+    
+    <p style="margin-bottom: 15px;">안녕하세요! 최근 비트코인이 120K를 돌파하며 역사적 신고가를 달성했습니다. 이런 환희의 순간에도 누군가는 환호하고, 누군가는 기회를 놓쳐 아쉬워하고 있을 텐데요. 특히 전고점을 돌파한 지금과 같은 상황에서는 '어디까지 오를지', 그리고 '어디까지 조정을 받을지' 예측하기가 매우 까다롭습니다. 그래서 오늘은 이런 '미지의 영역'을 항해하는 데 필수적인 나침반, <b>피보나치 활용법</b>에 대해 심도 있게 분석해 보겠습니다. 😊</p>
+    
+    <h2 style="font-size: 24px; color: white; background: linear-gradient(to right, #00796b, #004d40); margin: 35px 0 15px; padding: 10px 25px; border-radius: 10px; text-shadow: 1px 1px 2px rgba(0,0,0,0.2); font-weight: 700; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"><b>📊 피보나치 분석: 단순한 선 긋기를 넘어서</b></h2>
+
+    <p style="margin-bottom: 15px;">대부분의 투자자들이 피보나치를 단순히 고점과 저점을 이어 되돌림 구간만 기다리는 용도로 사용합니다. 하지만 이런 방식은 동전 던지기와 다를 바 없습니다. 진정한 고수들은 피보나치를 훨씬 입체적으로 활용하여 매매의 신뢰도를 높입니다. 이 영상은 그 핵심 원리를 단계별로 설명합니다.</p>
+    
+    <h3 style="font-size: 20px; color: #00796b; margin: 25px 0 12px;"><b>[피보나치 기본 원리 및 설정]</b></h3>
+    <ul style="margin: 0 0 15px 20px; padding: 0;">
+        <li style="margin-bottom: 6px;"><b>피보나치의 중요성 (00:00:00):</b> 신고가 영역처럼 과거 데이터가 없는 구간에서 목표가(확장)와 눌림목(되돌림)을 예측하는 데 필수적입니다.</li>
+        <li style="margin-bottom: 6px;"><b>핵심 작도법 (00:02:49):</b> 되돌림과 확장을 모두 활용하기 위해선, 반드시 파동이 완성된 후 <span style="background-color: #fff9c4; padding: 2px 4px; border-radius: 3px;"><b>고점에서 저점 순서</b></span>로 선을 그어야 합니다.</li>
+        <li style="margin-bottom: 6px;"><b>주요 값 (00:02:36):</b> 0.382, 0.5, 0.618(황금비율), 0.786 등을 주요 되돌림 구간으로, 1.382, 1.618 등을 주요 확장 목표가로 활용합니다.</li>
+    </ul>
+
+    <div style="background-color: #e0f2f7; border-left: 4px solid #4dd0e1; padding: 15px; margin: 20px 0; border-radius: 0 8px 8px 0;">
+        <b>💡 알아두세요!</b><br>
+        피보나치의 신뢰도를 극대화하는 최고의 방법은 <b>'중첩(Confluence)'</b>입니다. 작은 파동에서 그은 피보나치와 큰 파동에서 그은 피보나치 값이 겹치는 구간, 또는 피보나치 값과 핵심 지지/저항선이 겹치는 구간은 매우 강력한 변곡점이 될 확률이 높습니다. (00:05:09)
+    </div>
+
+    <h2 style="font-size: 24px; color: white; background: linear-gradient(to right, #00796b, #004d40); margin: 35px 0 15px; padding: 10px 25px; border-radius: 10px; text-shadow: 1px 1px 2px rgba(0,0,0,0.2); font-weight: 700; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"><b>📈 실전 매매 전략: 피보나치와 지지/저항의 결합</b></h2>
+    
+    <p style="margin-bottom: 15px;">피보나치만 단독으로 사용하는 것은 매우 위험합니다. 시장은 수학 공식처럼 움직이지 않기 때문이죠. 매매 확률을 비약적으로 높이기 위한 핵심 열쇠는 바로 <b>지지/저항(S&R)</b>과의 결합입니다.</p>
+
+    <h3 style="font-size: 20px; color: #00796b; margin: 25px 0 12px;"><b>[피보나치 + S&R 매매 시뮬레이션 (00:09:16)]</b></h3>
+    <ol style="margin: 0 0 15px 20px; padding: 0;">
+        <li style="margin-bottom: 6px;"><b>지지/저항 확인:</b> 먼저 하락 시 지지를 받을 만한, 혹은 상승 시 저항을 받을 만한 주요 매물대(S&R)를 미리 파악합니다.</li>
+        <li style="margin-bottom: 6px;"><b>추세 전환 대기:</b> 성급하게 진입하지 않고, 지지선에서 반등하거나 저항선을 돌파하는 등 추세 전환의 신호를 기다립니다.</li>
+        <li style="margin-bottom: 6px;"><b>피보나치 작도:</b> 전환된 파동의 고점과 저점을 기준으로 피보나치를 작도합니다.</li>
+        <li style="margin-bottom: 0;"><b>중첩 구간 공략:</b> <span style="background-color: #fff9c4; padding: 2px 4px; border-radius: 3px;">피보나치 되돌림/확장 값과 미리 그어둔 S&R 라인이 겹치는 구간</span>을 핵심 진입/청산 타점으로 설정하고 손절라인을 걸고 진입합니다.</li>
+    </ol>
+    
+    <div style="background-color: #fffde7; border-left: 4px solid #fbc02d; padding: 15px; margin: 20px 0; border-radius: 0 8px 8px 0;">
+        <b>⚠️ 초보자를 위한 팁!</b><br>
+        지지/저항 라인을 찾는 것이 어렵다면 영상에서 소개된 자체 개발 지표를 활용해볼 수 있습니다. 이 지표는 자동으로 신뢰도 높은 지지/저항 구간을 표시해주어 피보나치와의 중첩 구간을 찾는 데 큰 도움을 줍니다. (00:08:10)
+    </div>
+
+    <div class="single-summary-card-container">
+        <div class="single-summary-card">
+            <div class="card-header">
+                <span class="card-header-icon">💡</span>
+                <h3><b>피보나치 매매 핵심 요약</b></h3>
+            </div>
+            <div class="card-content">
+                <div class="section">
+                    <b>✨ 핵심 전략:</b> <span class="highlight">피보나치와 지지/저항의 '중첩' 구간을 찾아라!</span> 이 두 가지 근거가 겹치는 자리가 가장 신뢰도 높은 타점입니다.
+                </div>
+                <div class="section">
+                    <b>📊 활용법:</b> <span class="highlight">되돌림</span>은 눌림목 매수 타점을, <span class="highlight">확장</span>은 신고가 영역의 매도 목표가를 설정하는 데 사용됩니다.
+                </div>
+                <div class="section">
+                    <b>🧮 작도법:</b> 항상 파동이 완성된 후 <span class="highlight">고점 → 저점 순서</span>로 그려야 되돌림과 확장을 모두 활용할 수 있습니다.
+                </div>
+                <div class="section">
+                    <b>👩‍💻 리스크 관리:</b> 중첩된 강력한 근거라도 100%는 없습니다. 진입 시 <span class="highlight">손절 라인 설정은 필수</span>입니다.
+                </div>
+            </div>
+            <div class="card-footer">
+                이 원칙들을 통해 불확실한 시장에서 승률 높은 매매를 경험해보세요.
+            </div>
+        </div>
+    </div>
+    
+    <h2 style="font-size: 24px; color: white; background: linear-gradient(to right, #00796b, #004d40); margin: 35px 0 15px; padding: 10px 25px; border-radius: 10px; text-shadow: 1px 1px 2px rgba(0,0,0,0.2); font-weight: 700; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"><b>🧐 투자 전략 및 참고사항</b></h2>
+    
+    <p style="margin-bottom: 15px;">피보나치와 지지/저항을 결합한 전략은 기술적 분석의 기본이면서도 가장 강력한 무기 중 하나입니다. 아래 사항을 참고하여 본인의 매매에 적용해보세요.</p>
+    
+    <ul style="margin: 0 0 15px 20px; padding: 0;">
+        <li style="margin-bottom: 6px;"><b>매수 전략:</b> 주요 지지선과 피보나치 되돌림 값(0.5, 0.618 등)이 겹치는 구간까지의 조정을 기다린 후, 반등을 확인하고 진입하는 것이 안정적입니다.</li>
+        <li style="margin-bottom: 6px;"><b>매도 전략:</b> 신고가 랠리 중에는 피보나치 확장 값(1.618 등)을 주요 익절 목표가로 설정하고 분할 매도로 대응하는 것이 좋습니다.</li>
+        <li style="margin-bottom: 0;"><b>마인드셋:</b> 예측이 틀릴 경우를 대비해 항상 손절 계획을 세워야 합니다. 모든 분석은 확률을 높이기 위한 과정일 뿐, 맹신은 금물입니다.</li>
+    </ul>
+
+    <div style="border-top: 1px dashed #e0e0e0; margin: 30px 0;"></div>
+    
+    <p style="margin-bottom: 15px;">이번 분석을 통해 피보나치를 활용한 매매에 자신감을 얻으셨기를 바랍니다. 궁금한 점은 언제든 댓글로 남겨주세요! 😊</p>
+
+    <div style="background-color: #ffebee; padding: 20px; border-radius: 8px; border: 1px solid #ef9a9a; margin-top: 30px;">
+        <h3 style="font-size: 20px; color: #c62828; margin-top: 0; margin-bottom: 10px; font-weight: bold;">⚠️ 면책조항</h3>
+        <p style="font-size: 14px; line-height: 1.6; color: #555;">본 분석은 영상 내용을 바탕으로 AI가 생성한 참고용 정보이며, 투자 추천이나 권유가 아닙니다. 모든 투자의 최종 결정과 책임은 투자자 본인에게 있습니다. 분석 내용은 시장 상황에 따라 달라질 수 있으므로 항상 최신 정보를 확인하고 신중하게 투자하시기 바랍니다.</p>
+    </div>
+</div>
+</body>
+</html>
