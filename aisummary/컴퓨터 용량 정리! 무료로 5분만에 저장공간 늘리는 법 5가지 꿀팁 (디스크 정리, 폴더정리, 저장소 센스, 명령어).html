@@ -1,0 +1,308 @@
+
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>컴퓨터 용량 정리! 무료로 5분만에 저장공간 늘리는 법 5가지 꿀팁 (디스크 정리, 폴더정리, 저장소 센스, 명령어)</title>
+    <style>
+        body {
+            color: #333;
+            line-height: 1.7;
+            font-family: 'Noto Sans KR', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f9fc;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px 40px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+        }
+        h1, h2, h3 {
+            font-weight: 700;
+        }
+        h1 {
+            font-size: 28px;
+            color: #2c3e50;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        h2 {
+            font-size: 24px;
+            color: white;
+            background: linear-gradient(to right, #00796b, #004d40);
+            margin: 35px 0 15px;
+            padding: 10px 25px;
+            border-bottom: 2px solid #b2ebf2;
+            border-radius: 10px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        h3 {
+            font-size: 20px;
+            color: #00796b;
+            margin: 25px 0 12px;
+            border-left: 4px solid #00796b;
+            padding-left: 10px;
+        }
+        p {
+            margin-bottom: 15px;
+            font-size: 16px;
+        }
+        ul {
+            margin: 0 0 15px 20px;
+            padding: 0;
+            list-style-type: disc;
+        }
+        li {
+            margin-bottom: 8px;
+        }
+        code {
+            background-color: #e8e8e8;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.95em;
+        }
+        .info-box {
+            background-color: #e0f2f7;
+            border-left: 4px solid #4dd0e1;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .warning-box {
+            background-color: #fffde7;
+            border-left: 4px solid #fbc02d;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        .highlight {
+            background-color: #fff9c4;
+            padding: 2px 4px;
+            border-radius: 3px;
+        }
+        .video-info {
+            background-color: #f1f8e9;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #c8e6c9;
+            margin-bottom: 25px;
+        }
+        .video-info p {
+            margin: 5px 0;
+        }
+        .video-info a {
+            color: #388e3c;
+            text-decoration: none;
+        }
+        .video-info a:hover {
+            text-decoration: underline;
+        }
+        .disclaimer-box {
+            background-color: #ffebee;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #ef9a9a;
+            margin-top: 30px;
+        }
+        .disclaimer-box h3 {
+            font-size: 20px;
+            color: #c62828;
+            margin-top: 0;
+            margin-bottom: 10px;
+            font-weight: bold;
+            border-left: none;
+            padding-left: 0;
+        }
+        .disclaimer-box p {
+            font-size: 14px;
+            line-height: 1.6;
+            color: #555;
+            margin-bottom: 0;
+        }
+        
+        .single-summary-card-container {
+            font-family: 'Noto Sans KR', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px 10px;
+            background-color: #e0f7fa;
+            margin: 20px 0;
+            border-radius: 12px;
+        }
+        .single-summary-card {
+            width: 100%;
+            max-width: 700px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.12);
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            border: 1px solid #b2ebf2;
+            box-sizing: border-box;
+            height: auto;
+        }
+        .single-summary-card .card-header {
+            display: flex;
+            align-items: center;
+            border-bottom: 2px solid #00796b;
+            padding-bottom: 12px;
+            margin-bottom: 12px;
+        }
+        .single-summary-card .card-header-icon {
+            font-size: 34px;
+            color: #00796b;
+            margin-right: 14px;
+        }
+        .single-summary-card .card-header h3 {
+            font-size: 26px;
+            color: #00796b;
+            margin: 0;
+            line-height: 1.3;
+            font-weight: 700;
+            border-left: none;
+            padding-left: 0;
+        }
+        .single-summary-card .card-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            font-size: 17px;
+            line-height: 1.65;
+            color: #333;
+        }
+        .single-summary-card .card-content .section {
+            margin-bottom: 10px;
+        }
+        .single-summary-card .card-content strong {
+            color: #004d40;
+            font-weight: 600;
+        }
+        .single-summary-card .card-footer {
+            font-size: 14px;
+            color: #777;
+            text-align: center;
+            padding-top: 12px;
+            border-top: 1px dashed #b2ebf2;
+            margin-top: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>컴퓨터 용량 정리! 무료로 5분만에 저장공간 늘리는 법 5가지 꿀팁</h1>
+        
+        <div class="video-info">
+            <p><strong>- 제목:</strong> 컴퓨터 용량 정리! 무료로 5분만에 저장공간 늘리는 법 5가지 꿀팁 (디스크 정리, 폴더정리, 저장소 센스, 명령어)</p>
+            <p><strong>- Video ID:</strong> ZPpc0pGdXbw</p>
+            <p><strong>- 링크:</strong> <a href="https://www.youtube.com/watch?v=ZPpc0pGdXbw" target="_blank">https://www.youtube.com/watch?v=ZPpc0pGdXbw</a></p>
+        </div>
+
+        <p>컴퓨터 저장 공간이 부족해서困擾를 겪고 계신가요? 이 영상은 간단한 '디스크 정리'부터 전문가용 '명령어'까지, 누구나 쉽게 따라 하여 최대 60GB의 용량을 확보할 수 있는 5가지 방법을 단계별로 안내합니다.</p>
+        
+        <h2>🛠️ 1단계: 기본 및 시스템 디스크 정리</h2>
+        <h3>가. 기본 디스크 정리 (간단한 방법)</h3>
+        <p>가장 먼저 시도해볼 수 있는 쉽고 안전한 방법입니다. 임시 파일, 다운로드한 프로그램 파일, 휴지통 등 불필요한 파일을 정리하여 기본적인 용량을 확보합니다.</p>
+        <ul>
+            <li><strong>(00:00:16)</strong> 프로그램 검색창에서 <strong>'디스크 정리'</strong>를 검색하여 실행합니다.</li>
+            <li>정리하고 싶은 드라이브(보통 C:)를 선택합니다.</li>
+            <li>삭제할 파일 목록에서 불필요한 항목들을 체크한 후 '확인'을 누릅니다.</li>
+        </ul>
+        
+        <h3>나. 시스템 파일 정리 (고급 방법)</h3>
+        <p>기본 정리 후에도 더 많은 공간이 필요하다면, 이전 윈도우 업데이트 백업 파일 등 시스템 관련 파일을 정리하여 수십 GB의 공간을 추가로 확보할 수 있습니다.</p>
+        <ul>
+            <li><strong>(00:00:38)</strong> 디스크 정리 창에서 <strong>'시스템 파일 정리'</strong> 버튼을 클릭합니다.</li>
+            <li>삭제할 파일 목록에서 <span class="highlight">'이전 Windows 설치 파일'</span>이나 'Windows 업데이트 정리' 등의 항목을 선택하고 '확인'을 누릅니다.</li>
+        </ul>
+        <div class="info-box">
+            <b>💡 알아두세요!</b><br>
+            '이전 Windows 설치 파일'을 삭제하면 이전 버전의 윈도우로 되돌아갈 수 없게 됩니다. 되돌릴 계획이 없다면 안전하게 삭제해도 됩니다.
+        </div>
+
+        <h2>⚙️ 2단계: 저장 공간 센스 (자동화 설정)</h2>
+        <p>매번 수동으로 정리하는 것이 번거롭다면, 윈도우의 '저장 공간 센스' 기능을 활성화하여 주기적으로 디스크를 자동 정리하도록 설정할 수 있습니다.</p>
+        <ul>
+            <li><strong>(00:00:55)</strong> Windows 설정 > 시스템 > <strong>저장소</strong>로 이동합니다.</li>
+            <li>'저장 공간 센스' 기능을 <strong>'켬'</strong>으로 변경합니다.</li>
+            <li>실행 주기를 '매월', '매주' 등으로 설정하여 자동으로 임시 파일 및 휴지통을 비우도록 할 수 있습니다.</li>
+        </ul>
+
+        <h2>🔍 3단계: 대용량 파일 찾기 (분석 프로그램 활용)</h2>
+        <p>어떤 파일이 용량을 많이 차지하는지 모를 때 유용한 방법입니다. 무료 프로그램을 사용하여 디스크 사용 현황을 시각적으로 분석하고 불필요한 대용량 파일을 쉽게 찾아 삭제할 수 있습니다.</p>
+        <ul>
+            <li><strong>(00:01:12)</strong> 마이크로소프트 스토어에서 무료 용량 분석 프로그램을 다운로드합니다. (예: TreeSize Free)</li>
+            <li>프로그램으로 분석하고 싶은 드라이브를 스캔합니다.</li>
+            <li>용량이 큰 순서대로 폴더와 파일이 정렬되어 표시되며, 불필요한 파일을 확인하고 직접 삭제할 수 있습니다.</li>
+        </ul>
+        <div class="warning-box">
+            <b>⚠️ 주의하세요!</b><br>
+            이러한 분석 프로그램은 실행 시 CPU를 많이 사용할 수 있으므로, 다른 중요한 작업을 하지 않을 때 단독으로 실행하는 것이 좋습니다. 또한, 시스템 폴더(예: Windows) 안의 파일은 무엇인지 확실하지 않다면 함부로 삭제해서는 안 됩니다.
+        </div>
+        
+        <h2>🖥️ 4단계: 명령어 프롬프트 활용 (전문가용)</h2>
+        <p>더 확실한 용량 확보와 최적화를 원한다면 명령어 프롬프트(CMD)를 사용할 수 있습니다. 이 방법들은 시스템에 직접적인 영향을 주므로, 각 명령어의 기능을 정확히 이해하고 사용해야 합니다.</p>
+        <h3>가. 삭제된 파일 흔적 지우기: <code>cipher</code></h3>
+        <p><strong>(02:07:720)</strong> 휴지통을 비워도 디스크에 남아있는 파일의 흔적을 완전히 덮어써서 복구 불가능하게 만들고, 약간의 공간을 확보하는 명령어입니다.</p>
+        <ul><li>관리자 권한으로 명령 프롬프트를 실행하고 <code>cipher /w:C:</code>를 입력합니다. (C:는 대상 드라이브)</li></ul>
+        <h3>나. 최대 절전 모드 끄기: <code>powercfg</code></h3>
+        <p><strong>(02:36:740)</strong> 최대 절전 모드는 RAM의 내용을 하드 디스크에 저장하여 RAM 용량만큼의 공간을 차지합니다. 이 기능을 사용하지 않는다면 비활성화하여 용량을 확보할 수 있습니다.</p>
+        <ul><li>관리자 권한으로 명령 프롬프트를 실행하고 <code>powercfg /h off</code>를 입력합니다.</li></ul>
+        <h3>다. 윈도우 시스템 파일 압축: <code>CompactOS</code></h3>
+        <p><strong>(03:04:660)</strong> 윈도우의 핵심 파일들을 압축하여 2~3GB 정도의 공간을 절약할 수 있는 기능입니다.</p>
+        <ul><li>관리자 권한으로 명령 프롬프트를 실행하고 <code>Compact.exe /CompactOS:always</code>를 입력합니다.</li></ul>
+        <div class="warning-box">
+            <b>⚠️ 주의하세요!</b><br>
+            CompactOS 기능은 디스크 공간을 확보하는 대신 시스템 성능을 약간 저하시킬 수 있습니다. 성능 저하가 느껴진다면 <code>Compact.exe /CompactOS:never</code> 명령어로 압축을 해제할 수 있습니다.
+        </div>
+        
+        <div class="single-summary-card-container">
+            <div class="single-summary-card">
+                <div class="card-header">
+                    <span class="card-header-icon">💡</span>
+                    <h3><b>컴퓨터 용량 확보 핵심 요약</b></h3>
+                </div>
+                <div class="card-content">
+                    <div class="section">
+                        <b>✨ 1. 디스크 정리:</b> <span class="highlight">가장 기본적이고 안전한 방법.</span> 임시 파일과 이전 윈도우 설치 파일을 제거하여 손쉽게 공간을 확보하세요.
+                    </div>
+                    <div class="section">
+                        <b>📊 2. 저장 공간 센스:</b> <span class="highlight">자동화로 편리하게 관리.</span> 한 번만 설정해두면 주기적으로 불필요한 파일을 알아서 정리해 줍니다.
+                    </div>
+                    <div class="section">
+                        <b>🔍 3. 용량 분석기:</b> <span class="highlight">숨어있는 대용량 파일을 찾아라!</span> 무료 프로그램을 이용해 어떤 파일이 용량을 차지하는지 한눈에 파악하고 정리하세요.
+                    </div>
+                    <div class="section">
+                        <b>👩‍💻 4. 명령어 활용:</b> <span class="highlight">전문가를 위한 강력한 최적화.</span> 최대 절전 모드 끄기, 시스템 파일 압축 등으로 추가 공간을 확보할 수 있지만, 주의가 필요합니다.
+                    </div>
+                </div>
+                <div class="card-footer">
+                    정리 전에는 중요한 파일을 백업하는 습관을 들이는 것이 좋습니다.
+                </div>
+            </div>
+        </div>
+
+        <h2>🧐 최종 정리 및 주의사항</h2>
+        <p>위에서 소개된 방법들을 순서대로 따라오셨다면 컴퓨터 용량이 충분히 넉넉해졌을 것입니다. 간단한 방법부터 차근차근 시도해보시고, 전문가용 방법은 내용을 충분히 숙지한 후에 진행하는 것을 권장합니다.</p>
+        <ul>
+            <li><strong>데이터 백업:</strong> 중요한 시스템 파일을 건드리기 전에는 항상 중요한 데이터를 외장 하드나 클라우드에 백업하세요.</li>
+            <li><strong>신중한 파일 삭제:</strong> 파일의 용도가 불확실하다면 삭제하지 않는 것이 안전합니다. 잘못된 파일 삭제는 시스템 오류의 원인이 될 수 있습니다.</li>
+            <li><strong>성능과 용량의 트레이드오프:</strong> 윈도우 파일 압축과 같은 기능은 용량을 확보하는 대신 시스템 성능에 영향을 줄 수 있음을 기억하세요.</li>
+        </ul>
+
+        <div class="disclaimer-box">
+            <h3>⚠️ 면책조항</h3>
+            <p>본 내용은 제공된 영상의 내용을 바탕으로 AI가 요약 및 정리한 정보입니다. 시스템 설정을 변경하는 작업에는 잠재적인 위험이 따를 수 있습니다. 작업을 수행하기 전에 중요한 데이터를 반드시 백업하시기 바라며, 이로 인해 발생하는 모든 문제의 책임은 사용자 본인에게 있습니다.</p>
+        </div>
+    </div>
+</body>
+</html>
